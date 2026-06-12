@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introducción a Meta Ads · Clase 3 horas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F3EE;
+    --card: #FFFFFF;
+    --border: rgba(0,0,0,0.09);
+    --text: #1C1C1A;
+    --muted: #72706A;
+    --accent: #E8612A;
+    --accent2: #2563EB;
+    --accent3: #059669;
+    --accent4: #D97706;
+    --rad: 16px;
+    --rad-sm: 10px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: #1C1C1A;
+    padding: 48px 48px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-circle-1 {
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 300px; height: 300px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.14;
+    pointer-events: none;
+  }
+
+  .hero-circle-2 {
+    position: absolute;
+    bottom: -80px; left: 25%;
+    width: 220px; height: 220px;
+    background: var(--accent2);
+    border-radius: 50%;
+    opacity: 0.10;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,97,42,0.18);
+    border: 1px solid rgba(232,97,42,0.35);
+    color: #FFA07A;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-dot {
+    width: 7px; height: 7px;
+    background: #FFA07A;
+    border-radius: 50%;
+    animation: blink 2s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.3; transform: scale(0.65); }
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 46px;
+    font-weight: 400;
+    line-height: 1.1;
+    color: #FFFFFF;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: #FFA07A;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.48);
+    font-weight: 400;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 32px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-stat { display: flex; flex-direction: column; gap: 2px; }
+
+  .hero-stat .val {
+    font-size: 26px;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1;
+  }
+
+  .hero-stat .lbl {
+    font-size: 11px;
+    color: rgba(255,255,255,0.38);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 500;
+  }
+
+  /* ─── NAV ─── */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 14px 48px;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    scrollbar-width: none;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border: none;
+    background: transparent;
+    transition: background 0.18s, color 0.18s;
+    font-family: inherit;
+  }
+
+  .tab:hover { background: var(--bg); color: var(--text); }
+
+  .tab.active {
+    background: var(--text);
+    color: #FFFFFF;
+  }
+
+  /* ─── CONTENT ─── */
+  .content { padding: 36px 48px 60px; }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeUp 0.28s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* ─── GRIDS ─── */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--rad);
+    padding: 24px;
+  }
+
+  .card-sm { padding: 18px 20px; }
+
+  .card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  .mb16 { margin-bottom: 16px; }
+  .mb24 { margin-bottom: 24px; }
+
+  /* ─── TAGS ─── */
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  .tag-orange { background: #FEF0E7; color: #C04A12; }
+  .tag-blue   { background: #EFF5FF; color: #1D4ED8; }
+  .tag-green  { background: #ECFDF5; color: #047857; }
+  .tag-amber  { background: #FFFBEB; color: #92400E; }
+  .tag-purple { background: #F5F3FF; color: #5B21B6; }
+  .tag-gray   { background: #F3F4F6; color: #374151; }
+  .tag-pink   { background: #FFF0F4; color: #9D174D; }
+
+  /* ─── TIMELINE ─── */
+  .timeline { display: flex; flex-direction: column; position: relative; }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px; top: 28px; bottom: 28px;
+    width: 1.5px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2));
+    opacity: 0.18;
+  }
+
+  .tl-item {
+    display: flex;
+    gap: 16px;
+    padding: 14px 10px 14px 8px;
+    border-radius: var(--rad-sm);
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+
+  .tl-item:hover { background: var(--bg); }
+
+  .tl-dot {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+    color: #fff;
+    position: relative; z-index: 1;
+  }
+
+  .tl-body { flex: 1; }
+  .tl-time { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .tl-title { font-size: 14px; font-weight: 600; color: var(--text); margin: 3px 0; }
+  .tl-desc  { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+  .tl-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+
+  .chip {
+    font-size: 11px; padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ─── BAR CHART ─── */
+  .bar-chart { display: flex; flex-direction: column; gap: 13px; padding: 4px 0; }
+
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+
+  .bar-label { font-size: 12px; color: var(--muted); width: 76px; text-align: right; flex-shrink: 0; }
+  .bar-label-wide { width: 110px; text-align: left; }
+
+  .bar-track {
+    flex: 1; height: 9px;
+    background: var(--bg);
+    border-radius: 20px; overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1.1s cubic-bezier(.4,0,.2,1);
+    width: 0;
+  }
+
+  .bar-val { font-size: 12px; font-weight: 600; color: var(--text); width: 50px; flex-shrink: 0; }
+
+  /* ─── FUNNEL ─── */
+  .funnel { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0; }
+
+  .funnel-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    border-radius: var(--rad-sm);
+    transition: transform 0.2s;
+    cursor: default;
+  }
+
+  .funnel-row:hover { transform: scaleX(1.01); }
+
+  .f-tofu  { background: #EFF5FF; width: 100%; }
+  .f-mofu  { background: #F5F3FF; width: 84%; }
+  .f-bofu  { background: #ECFDF5; width: 66%; }
+  .f-ret   { background: #FFFBEB; width: 46%; }
+
+  .f-label { display: flex; flex-direction: column; }
+  .f-name  { font-size: 13px; font-weight: 700; color: var(--text); }
+  .f-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .f-pct   { font-size: 20px; font-weight: 800; color: var(--text); }
+
+  /* ─── CONCEPT CARDS ─── */
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .concept-card {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--rad-sm);
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, transform 0.18s;
+  }
+
+  .concept-card:hover {
+    border-color: var(--accent);
+    background: #FEF0E7;
+    transform: translateY(-2px);
+  }
+
+  .concept-icon { font-size: 22px; margin-bottom: 6px; }
+  .concept-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .concept-def  { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+
+  /* ─── METRIC CARDS ─── */
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--rad-sm);
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .metric-big { font-size: 30px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .metric-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+
+  /* ─── EXERCISE ─── */
+  .ex-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px; margin-bottom: 22px;
+  }
+
+  .ex-num {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .ex1-num { background: #FEF0E7; color: var(--accent); }
+  .ex2-num { background: #EFF5FF; color: var(--accent2); }
+
+  .scenario {
+    background: #F5F3EE;
+    border-left: 3.5px solid var(--accent);
+    border-radius: 0 var(--rad-sm) var(--rad-sm) 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .scenario.blue  { border-left-color: var(--accent2); }
+  .scenario.green { border-left-color: var(--accent3); }
+
+  .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+
+  .choice {
+    padding: 13px 16px;
+    border: 2px solid var(--border);
+    border-radius: var(--rad-sm);
+    background: var(--card);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    color: var(--text);
+    transition: border-color 0.18s, background 0.18s;
+    line-height: 1.4;
+  }
+
+  .choice:hover:not(:disabled) { border-color: var(--accent); background: #FEF0E7; }
+  .choice.correct { border-color: #059669; background: #ECFDF5; color: #065F46; }
+  .choice.wrong   { border-color: #DC2626; background: #FEF2F2; color: #991B1B; }
+
+  .feedback {
+    display: none;
+    padding: 14px 18px;
+    border-radius: var(--rad-sm);
+    font-size: 13px;
+    line-height: 1.65;
+    margin-top: 10px;
+  }
+
+  .feedback.show { display: block; }
+  .fb-ok  { background: #ECFDF5; color: #064E3B; border: 1px solid rgba(5,150,105,0.18); }
+  .fb-err { background: #FEF2F2; color: #7F1D1D; border: 1px solid rgba(220,38,38,0.18); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+
+  /* ─── CALC ─── */
+  .input-field {
+    width: 100%;
+    padding: 11px 15px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--rad-sm);
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.18s, background 0.18s;
+    margin: 6px 0 14px;
+  }
+
+  .input-field:focus { border-color: var(--accent); background: #fff; }
+
+  .input-label { font-size: 13px; font-weight: 600; color: var(--text); }
+
+  .result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 13px 16px;
+    background: var(--bg);
+    border-radius: var(--rad-sm);
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .result-row span:last-child { font-weight: 700; font-size: 15px; color: var(--text); }
+
+  .roas-box {
+    display: none;
+    background: var(--text);
+    color: #fff;
+    border-radius: var(--rad-sm);
+    padding: 18px 22px;
+    margin-top: 14px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .roas-box.show { display: flex; }
+
+  .roas-box .r-lbl { font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: .06em; }
+  .roas-box .r-val { font-size: 26px; font-weight: 800; margin-top: 2px; }
+
+  .advice-box { display: none; margin-top: 12px; }
+  .advice-box.show { display: block; }
+
+  .adv { padding: 13px 17px; border-radius: var(--rad-sm); font-size: 13px; line-height: 1.65; }
+  .adv-green  { background: #ECFDF5; color: #065F46; }
+  .adv-amber  { background: #FFFBEB; color: #78350F; }
+  .adv-red    { background: #FEF2F2; color: #7F1D1D; }
+
+  /* ─── SCORE ─── */
+  .score-wrap {
+    display: none;
+    text-align: center;
+    padding: 28px 24px;
+    background: var(--bg);
+    border-radius: var(--rad);
+    margin-top: 20px;
+  }
+
+  .score-wrap.show { display: block; }
+  .score-emoji { font-size: 44px; margin-bottom: 10px; }
+  .score-val { font-size: 26px; font-weight: 800; color: var(--text); }
+  .score-msg { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+  /* ─── MISC ─── */
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .items-start { align-items: flex-start; }
+  .gap8 { gap: 8px; }
+  .gap12 { gap: 12px; }
+  .gap16 { gap: 16px; }
+  .flex-1 { flex: 1; }
+
+  .icon-box {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .row-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 16px;
+    background: var(--bg);
+    border-radius: var(--rad-sm);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .row-item-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .row-item-title { font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .row-item-desc  { color: var(--muted); font-size: 12px; }
+
+  .level-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .level-row:last-child { border-bottom: none; }
+
+  .level-circle {
+    min-width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .level-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-done  { background: rgba(5,150,105,0.2);  color: #34D399; }
+  .badge-next  { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.35); }
+
+  .step-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    border: 1.5px solid;
+    display: inline-block;
+  }
+
+  .diagnosis-row {
+    padding: 14px 18px;
+    border-radius: var(--rad-sm);
+    font-size: 13px; line-height: 1.65;
+    margin-bottom: 10px;
+    border-left: 3.5px solid;
+  }
+  .diag-title { font-weight: 600; margin-bottom: 3px; }
+  .diag-body  { font-size: 12px; color: var(--muted); }
+
+  .tl-col { flex: 1; }
+  .sidebar { width: 280px; flex-shrink: 0; }
+
+  @media (max-width: 800px) {
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 32px; }
+    .nav-tabs { padding: 10px 20px; }
+    .content { padding: 24px 20px 48px; }
+    .g2, .g3, .g4, .concept-grid, .choice-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 20px; }
+    .hero-stat .val { font-size: 20px; }
+    .flex.tl-row { flex-direction: column; }
+    .sidebar { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-circle-1"></div>
+  <div class="hero-circle-2"></div>
+
+  <div class="hero-badge">
+    <div class="hero-dot"></div>
+    Media Buyer Pro · Clase introductoria
+  </div>
+
+  <h1>Introducción a<br><em>Meta Ads</em> desde cero</h1>
+
+  <p class="hero-sub">Duración: 3 horas · De básico a avanzado · Práctico y aplicable desde hoy</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="val">6</span><span class="lbl">Módulos</span></div>
+    <div class="hero-stat"><span class="val">3h</span><span class="lbl">Duración</span></div>
+    <div class="hero-stat"><span class="val">2</span><span class="lbl">Ejercicios</span></div>
+    <div class="hero-stat"><span class="val">+30</span><span class="lbl">Conceptos</span></div>
+  </div>
+</div>
+
+<!-- ═══ NAVEGACIÓN ═══ -->
+<div class="nav-tabs">
+  <button class="tab active" onclick="showTab('agenda')">📋 Agenda</button>
+  <button class="tab" onclick="showTab('ecosistema')">① Ecosistema</button>
+  <button class="tab" onclick="showTab('campanas')">② Campañas</button>
+  <button class="tab" onclick="showTab('metricas')">③ Métricas</button>
+  <button class="tab" onclick="showTab('ejercicio1')">🎯 Ejercicio 1</button>
+  <button class="tab" onclick="showTab('ejercicio2')">🧮 Ejercicio 2</button>
+  <button class="tab" onclick="showTab('avanzado')">④ Avanzado</button>
+</div>
+
+<!-- ═══ CONTENIDO ═══ -->
+<div class="content">
+
+  <!-- ── PANEL AGENDA ── -->
+  <div class="panel active" id="panel-agenda">
+    <div class="section-label">Plan de clase · 3 horas</div>
+
+    <div class="flex gap16" style="align-items:flex-start">
+      <div class="tl-col">
+        <div class="timeline">
+
+          <div class="tl-item" onclick="showTab('ecosistema')">
+            <div class="tl-dot" style="background:#E8612A">1</div>
+            <div class="tl-body">
+              <div class="tl-time">0:00 – 0:30 · 30 min</div>
+              <div class="tl-title">¿Qué es Meta Ads y cómo funciona?</div>
+              <div class="tl-desc">El ecosistema: Facebook, Instagram, Audience Network. Por qué publicitar aquí y cuánto poder tiene el algoritmo.</div>
+              <div class="tl-chips">
+                <span class="chip">Meta Business Suite</span>
+                <span class="chip">Ads Manager</span>
+                <span class="chip">Pixel</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item" onclick="showTab('campanas')">
+            <div class="tl-dot" style="background:#2563EB">2</div>
+            <div class="tl-body">
+              <div class="tl-time">0:30 – 1:10 · 40 min</div>
+              <div class="tl-title">Estructura de campañas</div>
+              <div class="tl-desc">Campaña → Conjunto → Anuncio. Objetivos ODAX, tipos de audiencias, formatos creativos y estrategias de presupuesto.</div>
+              <div class="tl-chips">
+                <span class="chip">Objetivos ODAX</span>
+                <span class="chip">Audiencias</span>
+                <span class="chip">Formatos</span>
+                <span class="chip">CBO vs ABO</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item" onclick="showTab('ejercicio1')">
+            <div class="tl-dot" style="background:#DC2626">🎯</div>
+            <div class="tl-body">
+              <div class="tl-time">1:10 – 1:30 · 20 min</div>
+              <div class="tl-title">🎯 Ejercicio 1 — Rompe el hielo</div>
+              <div class="tl-desc">Los asistentes eligen objetivo, audiencia y presupuesto para 3 casos reales. Diagnóstico de nivel automático.</div>
+            </div>
+          </div>
+
+          <div class="tl-item" onclick="showTab('metricas')">
+            <div class="tl-dot" style="background:#D97706">3</div>
+            <div class="tl-body">
+              <div class="tl-time">1:30 – 2:05 · 35 min</div>
+              <div class="tl-title">Métricas que sí importan</div>
+              <div class="tl-desc">CPM, CPC, CTR, ROAS, CPA y Frecuencia. Cómo leer resultados, qué optimizar primero y diagnóstico rápido de campañas.</div>
+              <div class="tl-chips">
+                <span class="chip">CPM</span>
+                <span class="chip">CTR</span>
+                <span class="chip">ROAS</span>
+                <span class="chip">CPA</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item" onclick="showTab('ejercicio2')">
+            <div class="tl-dot" style="background:#059669">🧮</div>
+            <div class="tl-body">
+              <div class="tl-time">2:05 – 2:25 · 20 min</div>
+              <div class="tl-title">🧮 Ejercicio 2 — Calculadora de rentabilidad</div>
+              <div class="tl-desc">Cada asistente ingresa datos reales de su negocio y proyecta ventas, ROAS y rentabilidad de su primera campaña.</div>
+            </div>
+          </div>
+
+          <div class="tl-item" onclick="showTab('avanzado')">
+            <div class="tl-dot" style="background:#1C1C1A">4</div>
+            <div class="tl-body">
+              <div class="tl-time">2:25 – 3:00 · 35 min</div>
+              <div class="tl-title">Conceptos avanzados + preguntas</div>
+              <div class="tl-desc">Retargeting, Lookalike, Advantage+, errores frecuentes, hoja de ruta y cierre de clase.</div>
+              <div class="tl-chips">
+                <span class="chip">Retargeting</span>
+                <span class="chip">Lookalike</span>
+                <span class="chip">Advantage+</span>
+                <span class="chip">A/B Testing</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sidebar" style="display:flex; flex-direction:column; gap:14px;">
+        <div class="card">
+          <div class="section-label" style="margin-bottom:14px">Carga horaria</div>
+          <div class="bar-chart" id="agenda-bars">
+            <div class="bar-row">
+              <span class="bar-label">Teoría</span>
+              <div class="bar-track"><div class="bar-fill" style="background:#E8612A" data-w="55%"></div></div>
+              <span class="bar-val">55%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">Práctica</span>
+              <div class="bar-track"><div class="bar-fill" style="background:#2563EB" data-w="30%"></div></div>
+              <span class="bar-val">30%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">Q &amp; A</span>
+              <div class="bar-track"><div class="bar-fill" style="background:#059669" data-w="15%"></div></div>
+              <span class="bar-val">15%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="background:#1C1C1A; border-color:#2A2A28;">
+          <div style="font-size:10.5px; text-transform:uppercase; letter-spacing:.09em; color:rgba(255,255,255,0.38); margin-bottom:14px; font-weight:700;">Necesitas antes de empezar</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,0.8);">
+              <span style="font-size:16px;">✅</span> Cuenta personal de Facebook
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,0.8);">
+              <span style="font-size:16px;">✅</span> Meta Business Suite activo
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,0.8);">
+              <span style="font-size:16px;">✅</span> Página de Facebook verificada
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,0.8);">
+              <span style="font-size:16px;">📌</span> Anota dudas en tiempo real
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL ECOSISTEMA ── -->
+  <div class="panel" id="panel-ecosistema">
+    <div class="section-label">Módulo 1 · El ecosistema de Meta Ads</div>
+
+    <div class="g4 mb16">
+      <div class="card card-sm" style="border-top:3px solid #2563EB;">
+        <div style="font-size:28px; margin-bottom:10px;">📘</div>
+        <div style="font-weight:700; font-size:14px; color:var(--text);">Facebook</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px;">+3.000M usuarios activos mensuales. Todas las edades.</div>
+      </div>
+      <div class="card card-sm" style="border-top:3px solid #E8612A;">
+        <div style="font-size:28px; margin-bottom:10px;">📸</div>
+        <div style="font-weight:700; font-size:14px; color:var(--text);">Instagram</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px;">+2.000M usuarios. Alta intención visual y compra.</div>
+      </div>
+      <div class="card card-sm" style="border-top:3px solid #059669;">
+        <div style="font-size:28px; margin-bottom:10px;">📱</div>
+        <div style="font-weight:700; font-size:14px; color:var(--text);">Messenger</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px;">Ideal para conversaciones directas y atención al cliente.</div>
+      </div>
+      <div class="card card-sm" style="border-top:3px solid #D97706;">
+        <div style="font-size:28px; margin-bottom:10px;">🌐</div>
+        <div style="font-weight:700; font-size:14px; color:var(--text);">Audience Network</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px;">Red externa de apps y sitios. Alcance adicional.</div>
+      </div>
+    </div>
+
+    <div class="g2 mb16">
+      <div class="card">
+        <div class="flex items-center gap12 mb16" style="margin-bottom:16px;">
+          <div class="icon-box" style="background:#EFF5FF;">🏗️</div>
+          <div>
+            <div style="font-weight:700; font-size:15px; color:var(--text);">Estructura del Ads Manager</div>
+            <div style="font-size:12px; color:var(--muted);">3 niveles jerárquicos que debes dominar</div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="padding:13px 16px; background:#EFF5FF; border-radius:10px; border-left:3.5px solid #2563EB;">
+            <div style="font-weight:700; font-size:13px; color:#1D4ED8;">📁 CAMPAÑA</div>
+            <div style="font-size:12px; color:#3B5FA0; margin-top:3px;">Define el objetivo general: tráfico, ventas, leads, reconocimiento...</div>
+          </div>
+          <div style="padding:13px 16px; background:#F5F3FF; border-radius:10px; border-left:3.5px solid #7C3AED; margin-left:14px;">
+            <div style="font-weight:700; font-size:13px; color:#5B21B6;">📂 CONJUNTO DE ANUNCIOS</div>
+            <div style="font-size:12px; color:#6D3DB3; margin-top:3px;">Audiencia, presupuesto, ubicación, horario y estrategia de puja.</div>
+          </div>
+          <div style="padding:13px 16px; background:#ECFDF5; border-radius:10px; border-left:3.5px solid #059669; margin-left:28px;">
+            <div style="font-weight:700; font-size:13px; color:#047857;">🖼️ ANUNCIO</div>
+            <div style="font-size:12px; color:#065F46; margin-top:3px;">El creativo: imagen, video, copy, título y CTA. La cara de tu marca.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center gap12" style="margin-bottom:16px;">
+          <div class="icon-box" style="background:#FEF0E7;">🎯</div>
+          <div>
+            <div style="font-weight:700; font-size:15px; color:var(--text);">El Meta Pixel</div>
+            <div style="font-size:12px; color:var(--muted);">Tu herramienta más importante</div>
+          </div>
+        </div>
+        <p style="font-size:13px; line-height:1.7; color:var(--muted); margin-bottom:14px;">
+          Un fragmento de código que instalas en tu sitio web y le permite a Meta
+          <strong style="color:var(--text); font-weight:600;">rastrear el comportamiento</strong> de los visitantes para optimizar y crear audiencias.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text);">
+            <span style="color:#059669; font-weight:700;">✓</span> Medir conversiones reales (compras, registros)
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text);">
+            <span style="color:#059669; font-weight:700;">✓</span> Crear audiencias de retargeting
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text);">
+            <span style="color:#059669; font-weight:700;">✓</span> Optimizar el algoritmo con datos reales
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text);">
+            <span style="color:#059669; font-weight:700;">✓</span> Crear Lookalike Audiences de calidad
+          </div>
+        </div>
+        <div style="margin-top:16px; padding:11px 15px; background:var(--bg); border-radius:8px; font-size:12px; font-family:monospace; color:var(--muted); border:1px solid var(--border);">
+          fbq('track', 'Purchase', &#123;value: 50, currency: 'USD'&#125;)
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:4px;">¿Por qué Meta Ads? El poder de los datos</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:22px; line-height:1.65;">
+        Meta tiene la mayor base de datos de comportamientos de usuarios del mundo. Eso se traduce en capacidad de segmentación insuperable para cualquier tipo de negocio.
+      </p>
+      <div class="g3">
+        <div style="text-align:center; padding:22px 14px; background:var(--bg); border-radius:12px;">
+          <div style="font-size:30px; font-weight:800; color:#E8612A; line-height:1;">3.2B</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:.05em;">Usuarios activos diarios</div>
+        </div>
+        <div style="text-align:center; padding:22px 14px; background:var(--bg); border-radius:12px;">
+          <div style="font-size:30px; font-weight:800; color:#2563EB; line-height:1;">2.5h</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:.05em;">Tiempo promedio por usuario/día</div>
+        </div>
+        <div style="text-align:center; padding:22px 14px; background:var(--bg); border-radius:12px;">
+          <div style="font-size:30px; font-weight:800; color:#059669; line-height:1;">$0.26</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:.05em;">CPC promedio global en USD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL CAMPAÑAS ── -->
+  <div class="panel" id="panel-campanas">
+    <div class="section-label">Módulo 2 · Objetivos, Audiencias y Formatos</div>
+
+    <div class="g2 mb16">
+      <div class="card">
+        <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:16px;">🎯 Objetivos de campaña (ODAX)</div>
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 15px; border-radius:10px; background:var(--bg);">
+            <span style="font-size:20px;">👁️</span>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:600; color:var(--text);">Reconocimiento</div>
+              <div style="font-size:11px; color:var(--muted);">Brand awareness, alcance. Parte superior del funnel.</div>
+            </div>
+            <span class="tag tag-blue">ToFu</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 15px; border-radius:10px; background:var(--bg);">
+            <span style="font-size:20px;">🔍</span>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:600; color:var(--text);">Consideración</div>
+              <div style="font-size:11px; color:var(--muted);">Tráfico, interacción, leads, reproducciones de video.</div>
+            </div>
+            <span class="tag tag-purple">MoFu</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 15px; border-radius:10px; background:var(--bg);">
+            <span style="font-size:20px;">💰</span>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:600; color:var(--text);">Conversión</div>
+              <div style="font-size:11px; color:var(--muted);">Ventas, leads calificados, visitas a tienda física.</div>
+            </div>
+            <span class="tag tag-green">BoFu</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:16px;">👥 Tipos de audiencia</div>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="concept-icon">📋</div>
+            <div class="concept-name">Custom Audience</div>
+            <div class="concept-def">Tu lista propia: clientes, visitantes web, interacciones en redes.</div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-icon">🔍</div>
+            <div class="concept-name">Lookalike</div>
+            <div class="concept-def">Personas similares a tus mejores clientes. Porcentaje 1–10%.</div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-icon">💡</div>
+            <div class="concept-name">Intereses</div>
+            <div class="concept-def">Segmentación por gustos, comportamientos y demografía.</div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-icon">⚡</div>
+            <div class="concept-name">Advantage+</div>
+            <div class="concept-def">Meta elige la audiencia automáticamente con inteligencia artificial.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb16">
+      <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:16px;">🖼️ Formatos de anuncios</div>
+      <div class="g4">
+        <div style="text-align:center; padding:18px 12px; background:#EFF5FF; border-radius:12px; cursor:pointer;">
+          <div style="font-size:30px; margin-bottom:10px;">🖼️</div>
+          <div style="font-size:13px; font-weight:700; color:#1D4ED8;">Imagen</div>
+          <div style="font-size:11px; color:#3B5FA0; margin-top:5px;">Simple y efectiva.<br>1200×628 px recomendado.</div>
+        </div>
+        <div style="text-align:center; padding:18px 12px; background:#F5F3FF; border-radius:12px; cursor:pointer;">
+          <div style="font-size:30px; margin-bottom:10px;">🎬</div>
+          <div style="font-size:13px; font-weight:700; color:#5B21B6;">Video</div>
+          <div style="font-size:11px; color:#6D3DB3; margin-top:5px;">Mayor engagement.<br>15–30 seg recomendado.</div>
+        </div>
+        <div style="text-align:center; padding:18px 12px; background:#ECFDF5; border-radius:12px; cursor:pointer;">
+          <div style="font-size:30px; margin-bottom:10px;">🎠</div>
+          <div style="font-size:13px; font-weight:700; color:#047857;">Carrusel</div>
+          <div style="font-size:11px; color:#065F46; margin-top:5px;">Múltiples imágenes.<br>Ideal para catálogos.</div>
+        </div>
+        <div style="text-align:center; padding:18px 12px; background:#FFFBEB; border-radius:12px; cursor:pointer;">
+          <div style="font-size:30px; margin-bottom:10px;">⚡</div>
+          <div style="font-size:13px; font-weight:700; color:#92400E;">Instant Experience</div>
+          <div style="font-size:11px; color:#78350F; margin-top:5px;">Landing fullscreen<br>dentro de la app.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:5px;">💰 Estrategias de puja y presupuesto</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:18px; line-height:1.65;">Cómo Meta decide cuándo y a quién mostrar tu anuncio dentro de la subasta publicitaria.</p>
+      <div class="g3">
+        <div style="padding:16px; background:var(--bg); border-radius:10px;">
+          <div style="font-weight:700; font-size:13px; color:var(--text); margin-bottom:5px;">📅 Presupuesto Diario</div>
+          <div style="font-size:12px; color:var(--muted); line-height:1.6;">Meta controla el gasto por día. Recomendado para empezar. Flexible y ajustable.</div>
+        </div>
+        <div style="padding:16px; background:var(--bg); border-radius:10px;">
+          <div style="font-weight:700; font-size:13px; color:var(--text); margin-bottom:5px;">📦 Presupuesto Total</div>
+          <div style="font-size:12px; color:var(--muted); line-height:1.6;">Define un máximo para toda la campaña. Útil para eventos con fecha límite.</div>
+        </div>
+        <div style="padding:16px; background:var(--bg); border-radius:10px;">
+          <div style="font-weight:700; font-size:13px; color:var(--text); margin-bottom:5px;">⚡ CBO vs ABO</div>
+          <div style="font-size:12px; color:var(--muted); line-height:1.6;">CBO (Campaign Budget Optimization) es recomendado cuando tienes 3 o más conjuntos activos.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL MÉTRICAS ── -->
+  <div class="panel" id="panel-metricas">
+    <div class="section-label">Módulo 3 · Métricas clave que sí importan</div>
+
+    <div class="card mb16">
+      <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:5px;">El tablero de control del media buyer</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:22px; line-height:1.65;">No todas las métricas son iguales. Estas son las 6 que debes revisar en cada campaña, organizadas por etapa del funnel.</p>
+
+      <div class="g3" style="margin-bottom:14px;">
+        <div class="metric-card" style="border-left:3.5px solid #2563EB;">
+          <div class="tag tag-blue" style="margin-bottom:12px;">Visibilidad</div>
+          <div class="metric-big" style="color:#2563EB;">CPM</div>
+          <div class="metric-lbl">Costo por mil impresiones</div>
+          <hr class="divider">
+          <div style="font-size:12px; line-height:1.7; color:var(--text);"><strong>Fórmula:</strong> Gasto ÷ Impresiones × 1.000</div>
+          <div style="font-size:11px; color:#059669; margin-top:8px; font-weight:600;">✓ Referencia: $5 – $15 USD</div>
+        </div>
+        <div class="metric-card" style="border-left:3.5px solid #7C3AED;">
+          <div class="tag tag-purple" style="margin-bottom:12px;">Enganche</div>
+          <div class="metric-big" style="color:#7C3AED;">CTR</div>
+          <div class="metric-lbl">Click through rate</div>
+          <hr class="divider">
+          <div style="font-size:12px; line-height:1.7; color:var(--text);"><strong>Fórmula:</strong> Clics ÷ Impresiones × 100</div>
+          <div style="font-size:11px; color:#059669; margin-top:8px; font-weight:600;">✓ Referencia: 1% – 3%+</div>
+        </div>
+        <div class="metric-card" style="border-left:3.5px solid #E8612A;">
+          <div class="tag tag-orange" style="margin-bottom:12px;">Tráfico</div>
+          <div class="metric-big" style="color:#E8612A;">CPC</div>
+          <div class="metric-lbl">Costo por clic</div>
+          <hr class="divider">
+          <div style="font-size:12px; line-height:1.7; color:var(--text);"><strong>Fórmula:</strong> Gasto total ÷ Clics</div>
+          <div style="font-size:11px; color:#059669; margin-top:8px; font-weight:600;">✓ Referencia: $0.20 – $2 USD</div>
+        </div>
+        <div class="metric-card" style="border-left:3.5px solid #D97706;">
+          <div class="tag tag-amber" style="margin-bottom:12px;">Conversión</div>
+          <div class="metric-big" style="color:#D97706;">CPA</div>
+          <div class="metric-lbl">Costo por adquisición</div>
+          <hr class="divider">
+          <div style="font-size:12px; line-height:1.7; color:var(--text);"><strong>Fórmula:</strong> Gasto total ÷ Conversiones</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:8px; font-weight:600;">Depende del ticket promedio</div>
+        </div>
+        <div class="metric-card" style="border-left:3.5px solid #059669;">
+          <div class="tag tag-green" style="margin-bottom:12px;">Rentabilidad</div>
+          <div class="metric-big" style="color:#059669;">ROAS</div>
+          <div class="metric-lbl">Retorno sobre inversión en ads</div>
+          <hr class="divider">
+          <div style="font-size:12px; line-height:1.7; color:var(--text);"><strong>Fórmula:</strong> Ingresos ÷ Gasto en ads</div>
+          <div style="font-size:11px; color:#059669; margin-top:8px; font-weight:600;">✓ Mínimo saludable: 2x – 3x+</div>
+        </div>
+        <div class="metric-card" style="border-left:3.5px solid #1C1C1A;">
+          <div class="tag tag-gray" style="margin-bottom:12px;">Saturación</div>
+          <div class="metric-big" style="color:#1C1C1A;">Frec.</div>
+          <div class="metric-lbl">Frecuencia de exposición</div>
+          <hr class="divider">
+          <div style="font-size:12px; line-height:1.7; color:var(--text);"><strong>Fórmula:</strong> Impresiones ÷ Alcance</div>
+          <div style="font-size:11px; color:#DC2626; margin-top:8px; font-weight:600;">⚠ Alerta si frecuencia &gt; 4</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:16px;">📊 Diagnóstico rápido de campaña</div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="diagnosis-row" style="background:#FFFBEB; border-left-color:#D97706;">
+          <div class="diag-title">CPM alto + CTR bajo</div>
+          <div class="diag-body">El creativo no conecta con la audiencia. Prueba otro copy, imagen o video. El algoritmo no puede optimizar sin señales.</div>
+        </div>
+        <div class="diagnosis-row" style="background:#FEF2F2; border-left-color:#DC2626;">
+          <div class="diag-title">CTR alto + conversiones bajas</div>
+          <div class="diag-body">El problema está en la landing page o el proceso de compra, no en el anuncio. Revisa velocidad, copy y UX de la página.</div>
+        </div>
+        <div class="diagnosis-row" style="background:#ECFDF5; border-left-color:#059669;">
+          <div class="diag-title">CPA bajando + ROAS subiendo</div>
+          <div class="diag-body">¡Campaña ganadora! Escala con cuidado: aumenta presupuesto máximo 20% cada 3–4 días para no romper el período de aprendizaje.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL EJERCICIO 1 ── -->
+  <div class="panel" id="panel-ejercicio1">
+    <div class="section-label">Ejercicio 1 · Rompe el hielo · 20 minutos</div>
+
+    <div class="card">
+      <div class="ex-header">
+        <div>
+          <div class="tag tag-orange" style="margin-bottom:12px;">🎯 Diagnóstico de nivel</div>
+          <div style="font-weight:700; font-size:20px; color:var(--text); line-height:1.3;">¿Sabes elegir el objetivo correcto?</div>
+          <p style="font-size:13px; color:var(--muted); margin-top:8px; line-height:1.65;">Lee cada escenario y elige la mejor respuesta. No hay trampa, hay razonamiento estratégico.</p>
+        </div>
+        <div class="ex-num ex1-num">01</div>
+      </div>
+
+      <!-- Pregunta A -->
+      <div style="margin-bottom:26px;">
+        <div class="scenario">
+          <strong>Escenario A:</strong> Una cafetería nueva en Cali quiere que 10.000 personas de la ciudad sepan que existe y vean su menú por primera vez. No tiene ventas online, vende únicamente de forma presencial.
+        </div>
+        <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:12px;">¿Qué objetivo de campaña usarías?</div>
+        <div class="choice-grid">
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-a')">💰 Conversiones (Ventas)</button>
+          <button class="choice" onclick="checkChoice(this,'correct','ex-a')">👁️ Reconocimiento (Alcance)</button>
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-a')">🔍 Tráfico al sitio web</button>
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-a')">📋 Generación de leads</button>
+        </div>
+        <div class="feedback fb-ok" id="fb-a-ok">
+          ✅ <strong>¡Correcto!</strong> Reconocimiento es ideal para negocios nuevos que necesitan visibilidad masiva y local antes de convertir. El objetivo Alcance maximiza cuántas personas únicas ven el anuncio a bajo CPM, construyendo conciencia de marca sin exigir acciones inmediatas.
+        </div>
+        <div class="feedback fb-err" id="fb-a-err">
+          ❌ <strong>No es la mejor opción.</strong> Sin conocimiento de marca ni historial de compra, pagar por conversiones sería muy costoso y el algoritmo no tendría datos para optimizar. Primero se construye reconocimiento (ToFu), luego se convierte (BoFu).
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Pregunta B -->
+      <div style="margin-bottom:26px;">
+        <div class="scenario blue">
+          <strong>Escenario B:</strong> Una tienda online de ropa ya tiene 500 compradores previos registrados con email y teléfono. Quiere que vuelvan a comprar. Tienen el Pixel instalado y los datos de clientes listos en un archivo CSV.
+        </div>
+        <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:12px;">¿Qué tipo de audiencia priorizarías?</div>
+        <div class="choice-grid">
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-b')">💡 Segmentación por intereses en moda</button>
+          <button class="choice" onclick="checkChoice(this,'correct','ex-b')">📋 Custom Audience con su lista de clientes</button>
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-b')">⚡ Advantage+ Audience automático</button>
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-b')">👥 Lookalike 1% sin fuente propia</button>
+        </div>
+        <div class="feedback fb-ok" id="fb-b-ok">
+          ✅ <strong>¡Excelente criterio!</strong> El Custom Audience con lista de clientes es la audiencia más caliente posible. Ya compraron antes, ya confían en la marca. El costo de reactivación es significativamente menor que adquirir nuevos clientes desde cero.
+        </div>
+        <div class="feedback fb-err" id="fb-b-err">
+          ❌ <strong>Reconsidéralo.</strong> Si ya tienes 500 compradores con email o teléfono, subirlos como Custom Audience es la decisión más inteligente y eficiente. Tienes los datos, úsalos antes de salir a buscar audiencias frías.
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Pregunta C -->
+      <div style="margin-bottom:10px;">
+        <div class="scenario green">
+          <strong>Escenario C:</strong> Una app de fitness quiere instalaciones al menor costo posible. Tienen $500/mes de presupuesto y ya probaron 3 creativos distintos con resultados similares en el pasado.
+        </div>
+        <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:12px;">¿Qué estrategia de presupuesto recomendarías?</div>
+        <div class="choice-grid">
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-c')">🗓️ $500 presupuesto total, duración 30 días</button>
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-c')">📦 ABO: $10/día por cada uno de 3 conjuntos</button>
+          <button class="choice" onclick="checkChoice(this,'correct','ex-c')">⚡ CBO: $500/mes + 3 conjuntos distintos</button>
+          <button class="choice" onclick="checkChoice(this,'wrong','ex-c')">💰 Puja manual con límite de costo fijo</button>
+        </div>
+        <div class="feedback fb-ok" id="fb-c-ok">
+          ✅ <strong>¡Muy buen razonamiento!</strong> Con CBO, Meta distribuye el presupuesto automáticamente al conjunto que mejor está performando en tiempo real. Con 3 creativos probados y un presupuesto definido, esta es la estrategia más eficiente para maximizar instalaciones.
+        </div>
+        <div class="feedback fb-err" id="fb-c-err">
+          ❌ <strong>Reconsidéralo.</strong> CBO (Campaign Budget Optimization) permite que Meta asigne el presupuesto al conjunto ganador dinámicamente. ABO divide el presupuesto fijo sin adaptarse al performance, y el presupuesto total puede agotarse antes de completar el aprendizaje.
+        </div>
+      </div>
+
+      <div class="score-wrap" id="score-ex1">
+        <div class="score-emoji" id="score-emoji">🏆</div>
+        <div class="score-val" id="score-val"></div>
+        <div class="score-msg" id="score-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL EJERCICIO 2 ── -->
+  <div class="panel" id="panel-ejercicio2">
+    <div class="section-label">Ejercicio 2 · Calculadora de rentabilidad · 20 minutos</div>
+
+    <div class="card">
+      <div class="ex-header">
+        <div>
+          <div class="tag tag-green" style="margin-bottom:12px;">🧮 Nivel aplicado</div>
+          <div style="font-weight:700; font-size:20px; color:var(--text); line-height:1.3;">Simula tu primera campaña real</div>
+          <p style="font-size:13px; color:var(--muted); margin-top:8px; line-height:1.65;">Ingresa los datos de tu negocio o del caso de estudio y descubre si la inversión es rentable antes de gastar un peso.</p>
+        </div>
+        <div class="ex-num ex2-num">02</div>
+      </div>
+
+      <div class="g2">
+        <div>
+          <div class="input-label">💰 Inversión mensual en ads (USD)</div>
+          <input class="input-field" type="number" id="c_budget" placeholder="Ej: 500" min="1" oninput="calcROAS()">
+
+          <div class="input-label">📦 Precio de venta por unidad (USD)</div>
+          <input class="input-field" type="number" id="c_price" placeholder="Ej: 80" min="1" oninput="calcROAS()">
+
+          <div class="input-label">🏭 Costo del producto / COGS (USD)</div>
+          <input class="input-field" type="number" id="c_cogs" placeholder="Ej: 30" min="0" oninput="calcROAS()">
+
+          <div class="input-label">🎯 CTR esperado de tus anuncios (%)</div>
+          <input class="input-field" type="number" id="c_ctr" placeholder="Ej: 1.5" step="0.1" min="0.1" oninput="calcROAS()">
+
+          <div class="input-label">🛒 Tasa de conversión de tu landing (%)</div>
+          <input class="input-field" type="number" id="c_cvr" placeholder="Ej: 2" step="0.1" min="0.1" oninput="calcROAS()">
+        </div>
+
+        <div>
+          <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:12px;">📊 Resultados proyectados</div>
+
+          <div class="result-row"><span>Impresiones estimadas</span><span id="r_impressions">—</span></div>
+          <div class="result-row"><span>Clics esperados</span><span id="r_clicks">—</span></div>
+          <div class="result-row"><span>Ventas proyectadas</span><span id="r_sales">—</span></div>
+          <div class="result-row"><span>Ingresos brutos</span><span id="r_revenue">—</span></div>
+          <div class="result-row"><span>CPA (costo por venta)</span><span id="r_cpa">—</span></div>
+
+          <div class="roas-box" id="roas-box">
+            <div>
+              <div class="r-lbl">ROAS de tu campaña</div>
+              <div class="r-val" id="r_roas">0x</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="r-lbl">Ganancia neta estimada</div>
+              <div class="r-val" id="r_profit">$0</div>
+            </div>
+          </div>
+
+          <div class="advice-box" id="advice-box"></div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div style="background:var(--bg); border-radius:12px; padding:22px;">
+        <div style="font-weight:700; font-size:14px; color:var(--text); margin-bottom:14px;">📐 CPM de referencia en Colombia por industria (USD)</div>
+        <div class="bar-chart" id="cpm-bars">
+          <div class="bar-row">
+            <span class="bar-label bar-label-wide">E-commerce</span>
+            <div class="bar-track"><div class="bar-fill" style="background:#2563EB;" data-w="60%"></div></div>
+            <span class="bar-val">$6 – $9</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label bar-label-wide">Servicios</span>
+            <div class="bar-track"><div class="bar-fill" style="background:#7C3AED;" data-w="50%"></div></div>
+            <span class="bar-val">$4 – $7</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label bar-label-wide">Educación</span>
+            <div class="bar-track"><div class="bar-fill" style="background:#E8612A;" data-w="44%"></div></div>
+            <span class="bar-val">$3 – $6</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label bar-label-wide">Restaurantes</span>
+            <div class="bar-track"><div class="bar-fill" style="background:#D97706;" data-w="35%"></div></div>
+            <span class="bar-val">$2 – $5</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label bar-label-wide">Inmobiliaria</span>
+            <div class="bar-track"><div class="bar-fill" style="background:#059669;" data-w="74%"></div></div>
+            <span class="bar-val">$8 – $14</span>
+          </div>
+        </div>
+        <div style="font-size:11px; color:var(--muted); margin-top:12px;">* La calculadora usa $7 como CPM base de referencia. Ajusta según tu industria.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL AVANZADO ── -->
+  <div class="panel" id="panel-avanzado">
+    <div class="section-label">Módulo 4 · Conceptos avanzados y próximos pasos</div>
+
+    <div class="g2 mb16">
+      <div class="card">
+        <div class="flex items-center gap12" style="margin-bottom:14px;">
+          <div class="icon-box" style="background:#EFF5FF;">🔄</div>
+          <div style="font-weight:700; font-size:15px; color:var(--text);">Retargeting estratégico</div>
+        </div>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.7;">Impacta a personas que ya interactuaron contigo pero no convirtieron. Son la audiencia más caliente después de tus clientes existentes.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:7px;">
+          <span class="step-pill" style="background:#EFF5FF; color:#1D4ED8; border-color:#bfdbfe;">Visitaron tu web</span>
+          <span class="step-pill" style="background:#F5F3FF; color:#5B21B6; border-color:#ddd6fe;">Carrito abandonado</span>
+          <span class="step-pill" style="background:#FFFBEB; color:#92400E; border-color:#fde68a;">Vieron 75% del video</span>
+          <span class="step-pill" style="background:#ECFDF5; color:#047857; border-color:#a7f3d0;">Interactuaron en IG</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center gap12" style="margin-bottom:14px;">
+          <div class="icon-box" style="background:#F5F3FF;">🧬</div>
+          <div style="font-weight:700; font-size:15px; color:var(--text);">Lookalike Audiences</div>
+        </div>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.7;">Meta analiza tus mejores clientes y encuentra personas con comportamientos similares. Cuanto mejor la fuente, mejor el lookalike.</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:12px; color:var(--text);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span style="font-weight:600;">Lookalike 1% — Muy similar</span>
+              <span class="tag tag-green">Caliente</span>
+            </div>
+            <div style="height:7px; background:#ECFDF5; border-radius:20px;"><div style="width:30%; height:100%; background:#059669; border-radius:20px;"></div></div>
+          </div>
+          <div style="font-size:12px; color:var(--text);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span style="font-weight:600;">Lookalike 3% — Equilibrado</span>
+              <span class="tag tag-amber">Templado</span>
+            </div>
+            <div style="height:7px; background:#FFFBEB; border-radius:20px;"><div style="width:55%; height:100%; background:#D97706; border-radius:20px;"></div></div>
+          </div>
+          <div style="font-size:12px; color:var(--text);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span style="font-weight:600;">Lookalike 10% — Más alcance</span>
+              <span class="tag tag-gray">Frío</span>
+            </div>
+            <div style="height:7px; background:#F3F4F6; border-radius:20px;"><div style="width:85%; height:100%; background:#9CA3AF; border-radius:20px;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb16">
+      <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:5px;">⚡ Advantage+ Shopping Campaigns</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:18px; line-height:1.65;">El modo piloto automático de Meta para e-commerce. La IA maneja audiencias, presupuesto, ubicaciones y creativos de forma autónoma.</p>
+      <div class="g3">
+        <div style="padding:16px; background:#EFF5FF; border-radius:10px; text-align:center;">
+          <div style="font-size:26px; margin-bottom:8px;">🤖</div>
+          <div style="font-size:13px; font-weight:700; color:#1D4ED8;">IA gestiona todo</div>
+          <div style="font-size:11px; color:#3B5FA0; margin-top:5px;">Audiencias, puja y ubicación completamente automáticas.</div>
+        </div>
+        <div style="padding:16px; background:#ECFDF5; border-radius:10px; text-align:center;">
+          <div style="font-size:26px; margin-bottom:8px;">🎨</div>
+          <div style="font-size:13px; font-weight:700; color:#047857;">Creativos flexibles</div>
+          <div style="font-size:11px; color:#065F46; margin-top:5px;">Hasta 150 creativos distintos por campaña.</div>
+        </div>
+        <div style="padding:16px; background:#FFFBEB; border-radius:10px; text-align:center;">
+          <div style="font-size:26px; margin-bottom:8px;">📈</div>
+          <div style="font-size:13px; font-weight:700; color:#92400E;">Resultados</div>
+          <div style="font-size:11px; color:#78350F; margin-top:5px;">Meta reporta un promedio de 32% más ROAS con ASC.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb16">
+      <div style="font-weight:700; font-size:15px; color:var(--text); margin-bottom:16px;">🚫 Errores más comunes del principiante</div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="row-item">
+          <span class="row-item-icon">😤</span>
+          <div>
+            <div class="row-item-title">Pausar la campaña antes del aprendizaje</div>
+            <div class="row-item-desc">Meta necesita aproximadamente 50 conversiones en 7 días para optimizar. Si la pausas antes, el algoritmo reinicia desde cero.</div>
+          </div>
+        </div>
+        <div class="row-item">
+          <span class="row-item-icon">💸</span>
+          <div>
+            <div class="row-item-title">Cambiar el presupuesto abruptamente</div>
+            <div class="row-item-desc">Aumentar más del 50% de un día para otro reinicia el aprendizaje. Sube máximo un 20% cada 3–4 días para mantener la estabilidad.</div>
+          </div>
+        </div>
+        <div class="row-item">
+          <span class="row-item-icon">🎯</span>
+          <div>
+            <div class="row-item-title">Audiencias demasiado pequeñas</div>
+            <div class="row-item-desc">Para Colombia, mínimo 500K personas por conjunto de anuncios. Audiencias pequeñas disparan el CPM y la frecuencia rápidamente.</div>
+          </div>
+        </div>
+        <div class="row-item">
+          <span class="row-item-icon">📝</span>
+          <div>
+            <div class="row-item-title">No hacer A/B test de creativos</div>
+            <div class="row-item-desc">Siempre corre mínimo 2–3 creativos distintos. El creativo es responsable del 70% del éxito o fracaso de una campaña.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#1C1C1A; border-color:#2A2A28;">
+      <div style="font-weight:700; font-size:16px; color:#FFFFFF; margin-bottom:6px;">🗺️ Tu hoja de ruta como Media Buyer</div>
+      <p style="font-size:13px; color:rgba(255,255,255,0.42); margin-bottom:22px; line-height:1.65;">De principiante a experto. ¿En qué nivel estás hoy al terminar esta clase?</p>
+      <div>
+        <div class="level-row">
+          <div class="level-circle">1</div>
+          <div style="flex:1;">
+            <div style="font-size:13px; font-weight:600; color:#FFFFFF;">Fundamentos</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px;">Ads Manager, objetivos, estructura, métricas básicas</div>
+          </div>
+          <span class="level-badge badge-done">Hoy ✓</span>
+        </div>
+        <div class="level-row">
+          <div class="level-circle">2</div>
+          <div style="flex:1;">
+            <div style="font-size:13px; font-weight:600; color:#FFFFFF;">Optimización</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px;">Creativos, A/B test, retargeting, análisis de datos</div>
+          </div>
+          <span class="level-badge badge-next">Semanas 2–4</span>
+        </div>
+        <div class="level-row">
+          <div class="level-circle">3</div>
+          <div style="flex:1;">
+            <div style="font-size:13px; font-weight:600; color:#FFFFFF;">Escala</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px;">CBO, lookalike, Advantage+, audiences avanzadas</div>
+          </div>
+          <span class="level-badge badge-next">Meses 2–3</span>
+        </div>
+        <div class="level-row">
+          <div class="level-circle">4</div>
+          <div style="flex:1;">
+            <div style="font-size:13px; font-weight:600; color:#FFFFFF;">Media Buyer Pro</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px;">Estrategia omnicanal, atribución, reporting, clientes</div>
+          </div>
+          <span class="level-badge badge-next">Mes 4+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+  /* ─── TABS ─── */
+  const tabOrder = ['agenda','ecosistema','campanas','metricas','ejercicio1','ejercicio2','avanzado'];
+
+  function showTab(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+    var panel = document.getElementById('panel-' + id);
+    if (panel) panel.classList.add('active');
+
+    var idx = tabOrder.indexOf(id);
+    var tabs = document.querySelectorAll('.tab');
+    if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+
+    setTimeout(animateBars, 200);
+  }
+
+  /* ─── BAR ANIMATION ─── */
+  function animateBars() {
+    document.querySelectorAll('.bar-fill[data-w]').forEach(function(fill) {
+      fill.style.width = fill.getAttribute('data-w');
+    });
+  }
+
+  /* ─── EJERCICIO 1 ─── */
+  var ex1 = { a: null, b: null, c: null };
+  var ex1Score = 0;
+
+  function checkChoice(btn, result, key) {
+    var letter = key.split('-')[1]; // 'a', 'b', or 'c'
+    if (ex1[letter] !== null) return;
+    ex1[letter] = result;
+
+    var grid = btn.closest('.choice-grid');
+    grid.querySelectorAll('.choice').forEach(function(b) { b.disabled = true; });
+    btn.classList.add(result);
+
+    var ok  = document.getElementById('fb-' + letter + '-ok');
+    var err = document.getElementById('fb-' + letter + '-err');
+
+    if (result === 'correct') {
+      ok.classList.add('show');
+      ex1Score++;
+    } else {
+      err.classList.add('show');
+    }
+
+    if (ex1.a !== null && ex1.b !== null && ex1.c !== null) {
+      showScore();
+    }
+  }
+
+  function showScore() {
+    var wrap  = document.getElementById('score-ex1');
+    var emoji = document.getElementById('score-emoji');
+    var val   = document.getElementById('score-val');
+    var msg   = document.getElementById('score-msg');
+
+    wrap.classList.add('show');
+    var pct = Math.round((ex1Score / 3) * 100);
+    val.textContent = ex1Score + ' / 3 correctas (' + pct + '%)';
+
+    if (ex1Score === 3) {
+      emoji.textContent = '🏆';
+      msg.textContent = '¡Excelente! Ya tienes bases sólidas. Estás listo para ir más profundo.';
+    } else if (ex1Score === 2) {
+      emoji.textContent = '🎯';
+      msg.textContent = 'Muy bien. Un par de conceptos a reforzar y estarás al nivel.';
+    } else if (ex1Score === 1) {
+      emoji.textContent = '📚';
+      msg.textContent = 'Estás empezando. ¡Perfecto! Esta clase es exactamente para ti.';
+    } else {
+      emoji.textContent = '🌱';
+      msg.textContent = 'Partes desde cero. Eso es lo mejor — aprenderás sin vicios del pasado.';
+    }
+  }
+
+  /* ─── EJERCICIO 2 CALCULADORA ─── */
+  function calcROAS() {
+    var budget = parseFloat(document.getElementById('c_budget').value) || 0;
+    var price  = parseFloat(document.getElementById('c_price').value)  || 0;
+    var cogs   = parseFloat(document.getElementById('c_cogs').value)   || 0;
+    var ctr    = parseFloat(document.getElementById('c_ctr').value)    || 0;
+    var cvr    = parseFloat(document.getElementById('c_cvr').value)    || 0;
+
+    if (!budget || !price || !ctr || !cvr) return;
+
+    var CPM         = 7;
+    var impressions = Math.round((budget / CPM) * 1000);
+    var clicks      = Math.round(impressions * (ctr / 100));
+    var sales       = Math.round(clicks * (cvr / 100));
+    var revenue     = sales * price;
+    var cpa         = sales > 0 ? (budget / sales) : 0;
+    var roas        = revenue > 0 ? (revenue / budget) : 0;
+    var profit      = revenue - (sales * cogs) - budget;
+
+    document.getElementById('r_impressions').textContent = impressions.toLocaleString('es-CO');
+    document.getElementById('r_clicks').textContent      = clicks.toLocaleString('es-CO');
+    document.getElementById('r_sales').textContent       = sales.toLocaleString('es-CO');
+    document.getElementById('r_revenue').textContent     = '$' + revenue.toFixed(0);
+    document.getElementById('r_cpa').textContent         = cpa > 0 ? '$' + cpa.toFixed(2) : '—';
+
+    var roasBox = document.getElementById('roas-box');
+    roasBox.classList.add('show');
+    document.getElementById('r_roas').textContent   = roas.toFixed(2) + 'x';
+    document.getElementById('r_profit').textContent = '$' + profit.toFixed(0);
+
+    var advBox = document.getElementById('advice-box');
+    advBox.classList.add('show');
+
+    if (roas >= 3) {
+      advBox.innerHTML = '<div class="adv adv-green">🚀 <strong>Campaña rentable.</strong> ROAS de ' + roas.toFixed(1) + 'x. Puedes escalar gradualmente aumentando el presupuesto un 20% cada 3–4 días.</div>';
+    } else if (roas >= 1.5) {
+      advBox.innerHTML = '<div class="adv adv-amber">⚠️ <strong>Rentabilidad marginal.</strong> ROAS de ' + roas.toFixed(1) + 'x. Optimiza la tasa de conversión de la landing o reduce el COGS antes de escalar.</div>';
+    } else {
+      advBox.innerHTML = '<div class="adv adv-red">🛑 <strong>No rentable aún.</strong> ROAS de ' + roas.toFixed(1) + 'x. Revisa el creativo, la landing, el precio de venta o reduce el presupuesto inicial mientras optimizas.</div>';
+    }
+  }
+
+  /* ─── INIT ─── */
+  window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(animateBars, 400);
+  });
+</script>
+</body>
+</html>
