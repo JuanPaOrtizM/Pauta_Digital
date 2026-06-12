@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Ads — Guía de Implementación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root {
+  --bg:           #F7F5F1;
+  --bg-warm:      #EDE9E1;
+  --surface:      #FFFFFF;
+  --ink:          #1C1917;
+  --ink-2:        #57534E;
+  --ink-3:        #A8A29E;
+  --rule:         #D6D0C8;
+
+  --aw:  #5C3D9A;  --aw-l: #EDE8FA;  --aw-d: #3B2468;
+  --tr:  #0071E3;  --tr-l: #E3F0FF;  --tr-d: #004CA3;
+  --ld:  #C94A0C;  --ld-l: #FEF0E8;  --ld-d: #8C3308;
+  --sl:  #117A50;  --sl-l: #E6F4EE;  --sl-d: #0B5236;
+
+  --r: 12px;
+  --r-sm: 8px;
+}
+
+/* ─────────────────────────────────────────
+   RESET & BASE
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  /* subtle grain texture */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* ─────────────────────────────────────────
+   HEADER
+───────────────────────────────────────── */
+.header {
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--rule);
+  padding: 0 52px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 200;
+}
+
+.hb-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.meta-mark {
+  width: 36px; height: 36px;
+  background: #0082FB;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.header-name {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  line-height: 1;
+}
+
+.hb-pill {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--ink-2);
+  background: var(--bg-warm);
+  border: 1px solid var(--rule);
+  padding: 6px 14px;
+  border-radius: 100px;
+}
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 64px 52px 48px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+  border-bottom: 1.5px solid var(--rule);
+}
+
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 18px;
+}
+
+.hero-kicker span.dot-sep {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  display: inline-block;
+}
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 20px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+.hero p {
+  font-size: 15px;
+  color: var(--ink-2);
+  font-weight: 300;
+  max-width: 500px;
+  line-height: 1.7;
+}
+
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r);
+  overflow: hidden;
+  min-width: 200px;
+  background: var(--surface);
+}
+
+.h-stat {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--rule);
+}
+.h-stat:last-child { border-bottom: none; }
+
+.h-stat-val {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.h-stat-lbl { font-size: 11px; color: var(--ink-3); font-weight: 500; letter-spacing: 0.3px; }
+
+/* ─────────────────────────────────────────
+   OBJECTIVE NAV TABS
+───────────────────────────────────────── */
+.tabs-outer {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 52px 0;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.tab-btn {
+  padding: 18px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-right: 1px solid var(--rule);
+  transition: all 0.22s ease;
+  position: relative;
+  letter-spacing: 0.1px;
+}
+
+.tab-btn:last-child { border-right: none; }
+.tab-btn:hover { background: var(--bg); }
+
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.tab-btn.active { color: var(--ink); background: var(--bg); }
+.tab-btn.active::after { opacity: 1; }
+
+.tab-btn[data-obj="awareness"]::after  { background: var(--aw); }
+.tab-btn[data-obj="traffic"]::after    { background: var(--tr); }
+.tab-btn[data-obj="leads"]::after      { background: var(--ld); }
+.tab-btn[data-obj="sales"]::after      { background: var(--sl); }
+
+.tab-btn.active[data-obj="awareness"] { color: var(--aw-d); }
+.tab-btn.active[data-obj="traffic"]   { color: var(--tr-d); }
+.tab-btn.active[data-obj="leads"]     { color: var(--ld-d); }
+.tab-btn.active[data-obj="sales"]     { color: var(--sl-d); }
+
+.tab-ico {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--bg-warm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.tab-btn.active[data-obj="awareness"] .tab-ico { background: var(--aw-l); }
+.tab-btn.active[data-obj="traffic"]   .tab-ico { background: var(--tr-l); }
+.tab-btn.active[data-obj="leads"]     .tab-ico { background: var(--ld-l); }
+.tab-btn.active[data-obj="sales"]     .tab-ico { background: var(--sl-l); }
+
+/* ─────────────────────────────────────────
+   PANELS
+───────────────────────────────────────── */
+.content {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 52px 80px;
+}
+
+.panel { display: none; }
+.panel.active {
+  display: block;
+  animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   OBJECTIVE BANNER
+───────────────────────────────────────── */
+.obj-banner {
+  border-radius: var(--r);
+  padding: 40px 44px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.obj-banner::before {
+  content: attr(data-bignum);
+  position: absolute;
+  right: 40px; bottom: -20px;
+  font-family: 'Fraunces', serif;
+  font-size: 180px;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.07;
+  letter-spacing: -6px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ob-aw { background: var(--aw-l); }
+.ob-tr { background: var(--tr-l); }
+.ob-ld { background: var(--ld-l); }
+.ob-sl { background: var(--sl-l); }
+
+.obj-big-ico {
+  width: 68px; height: 68px;
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+}
+.ob-aw .obj-big-ico { background: var(--aw); }
+.ob-tr .obj-big-ico { background: var(--tr); }
+.ob-ld .obj-big-ico { background: var(--ld); }
+.ob-sl .obj-big-ico { background: var(--sl); }
+
+.obj-text h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.obj-text p {
+  font-size: 14px;
+  color: var(--ink-2);
+  font-weight: 300;
+  max-width: 540px;
+  line-height: 1.65;
+}
+
+.obj-chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 100px;
+  letter-spacing: 0.2px;
+  border: 1.5px solid transparent;
+}
+
+.ob-aw .chip { background: var(--aw); color: #fff; }
+.ob-tr .chip { background: var(--tr); color: #fff; }
+.ob-ld .chip { background: var(--ld); color: #fff; }
+.ob-sl .chip { background: var(--sl); color: #fff; }
+
+.chip.outline {
+  background: transparent !important;
+}
+
+.ob-aw .chip.outline { color: var(--aw-d); border-color: var(--aw); }
+.ob-tr .chip.outline { color: var(--tr-d); border-color: var(--tr); }
+.ob-ld .chip.outline { color: var(--ld-d); border-color: var(--ld); }
+.ob-sl .chip.outline { color: var(--sl-d); border-color: var(--sl); }
+
+/* ─────────────────────────────────────────
+   METRIC STRIP
+───────────────────────────────────────── */
+.metric-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+  margin-bottom: 28px;
+}
+
+.ms-item {
+  padding: 20px 24px;
+  border-right: 1px solid var(--rule);
+}
+.ms-item:last-child { border-right: none; }
+
+.ms-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+
+.ms-val {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.ms-desc { font-size: 12px; color: var(--ink-3); font-weight: 400; }
+
+/* ─────────────────────────────────────────
+   SECTION HEADER
+───────────────────────────────────────── */
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid var(--rule);
+}
+
+.sec-num {
+  font-family: 'Fraunces', serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-3);
+  letter-spacing: 0.5px;
+  padding-top: 2px;
+}
+
+.sec-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+/* ─────────────────────────────────────────
+   CARD WRAPPER
+───────────────────────────────────────── */
+.card-wrap {
+  background: var(--surface);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+}
+
+/* ─────────────────────────────────────────
+   3-LEVEL STRUCTURE
+───────────────────────────────────────── */
+.levels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.level-col {
+  background: var(--surface);
+  padding: 28px 24px;
+  transition: background 0.2s;
+}
+.level-col:hover { background: var(--bg); }
+
+.lc-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.lc-num {
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: white;
+  flex-shrink: 0;
+}
+
+.lc-title-wrap h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+.lc-title-wrap span { font-size: 11px; color: var(--ink-3); }
+
+.cfg-row {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 12.5px;
+}
+.cfg-row:last-child { border-bottom: none; }
+
+.cfg-row strong {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-bottom: 1px;
+}
+.cfg-row span { color: var(--ink-2); font-weight: 300; line-height: 1.5; display: block; }
+
+/* ─────────────────────────────────────────
+   STEP GRID
+───────────────────────────────────────── */
+.step-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.step-card {
+  background: var(--surface);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r);
+  padding: 22px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: all 0.25s ease;
+  cursor: default;
+}
+
+.step-card:hover {
+  border-color: var(--rule);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.sn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 900;
+  color: white;
+  flex-shrink: 0;
+}
+
+.sc-body h4 {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin-bottom: 6px;
+}
+
+.sc-body p {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  font-weight: 300;
+  line-height: 1.65;
+}
+
+.sc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.sc-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 100px;
+  background: var(--bg-warm);
+  color: var(--ink-3);
+  border: 1px solid var(--rule);
+}
+
+/* ─────────────────────────────────────────
+   TWO-COL LAYOUT
+───────────────────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.two-col .card-wrap { margin-bottom: 0; }
+
+.card-wrap h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─────────────────────────────────────────
+   FORMAT GRID
+───────────────────────────────────────── */
+.fmt-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.fmt-card {
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r-sm);
+  padding: 14px 12px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--surface);
+  transition: all 0.2s ease;
+}
+
+.fmt-card:hover { background: var(--bg); }
+
+.fmt-card.sel {
+  border-color: #0082FB;
+  background: #E3F0FF;
+}
+
+.fmt-card .fi { font-size: 24px; display: block; margin-bottom: 6px; }
+.fmt-card .fn { font-size: 11px; font-weight: 700; display: block; margin-bottom: 1px; letter-spacing: 0.1px; }
+.fmt-card .fd { font-size: 10.5px; color: var(--ink-3); }
+
+/* ─────────────────────────────────────────
+   AUDIENCE CHIPS
+───────────────────────────────────────── */
+.aud-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.aud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--bg);
+  border: 1.5px solid var(--rule);
+  padding: 5px 11px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.18s ease;
+  cursor: default;
+}
+.aud-chip:hover { border-color: var(--ink); background: var(--surface); }
+
+/* ─────────────────────────────────────────
+   ALERT / INFO BOX
+───────────────────────────────────────── */
+.alert {
+  border-radius: var(--r-sm);
+  padding: 13px 16px;
+  font-size: 12.5px;
+  display: flex;
+  gap: 10px;
+  line-height: 1.55;
+}
+
+.alert.blue   { background: #E3F0FF; color: #004CA3; border: 1px solid rgba(0,113,227,0.2); }
+.alert.orange { background: #FEF0E8; color: #8C3308; border: 1px solid rgba(201,74,12,0.2); }
+.alert.green  { background: #E6F4EE; color: #0B5236; border: 1px solid rgba(17,122,80,0.2); }
+.alert.purple { background: #EDE8FA; color: #3B2468; border: 1px solid rgba(92,61,154,0.2); }
+
+/* ─────────────────────────────────────────
+   TIPS ROW
+───────────────────────────────────────── */
+.tips-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.tip-card {
+  background: var(--surface);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  transition: all 0.2s ease;
+}
+.tip-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
+
+.tip-ico { font-size: 22px; display: block; margin-bottom: 10px; }
+.tip-card h5 { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.1px; }
+.tip-card p { font-size: 12px; color: var(--ink-2); font-weight: 300; line-height: 1.6; }
+
+/* ─────────────────────────────────────────
+   TIMELINE
+───────────────────────────────────────── */
+.timeline { padding-left: 24px; border-left: 2px solid var(--rule); }
+
+.tl-item {
+  position: relative;
+  padding: 0 0 20px 20px;
+}
+
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -27px; top: 3px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--rule);
+}
+
+.tl-item h5 {
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.1px;
+}
+.tl-item p { font-size: 12px; color: var(--ink-2); font-weight: 300; line-height: 1.55; }
+
+/* ─────────────────────────────────────────
+   CHECKLIST
+───────────────────────────────────────── */
+.checklist { list-style: none; }
+
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist li:hover { color: var(--ink-2); }
+
+.cb {
+  width: 18px; height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: var(--surface);
+  transition: all 0.15s;
+}
+
+li.chk .cb { background: var(--ink); border-color: var(--ink); }
+li.chk .cb::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; }
+li.chk > span:last-child { text-decoration: line-through; color: var(--ink-3); }
+
+/* ─────────────────────────────────────────
+   ACCORDION
+───────────────────────────────────────── */
+.acc-item {
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r-sm);
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.acc-head {
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  user-select: none;
+  transition: background 0.15s;
+}
+.acc-head:hover { background: var(--bg); }
+
+.acc-chevron {
+  width: 18px; height: 18px;
+  transition: transform 0.25s ease;
+  color: var(--ink-3);
+}
+.acc-item.open .acc-chevron { transform: rotate(180deg); }
+
+.acc-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.acc-item.open .acc-body { max-height: 400px; }
+
+.acc-inner {
+  padding: 4px 18px 16px;
+  border-top: 1px solid var(--rule);
+  padding-top: 14px;
+}
+.acc-inner ul { list-style: none; }
+.acc-inner ul li {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  padding: 5px 0;
+  display: flex;
+  gap: 8px;
+  font-weight: 300;
+}
+.acc-inner ul li::before { content: '›'; color: var(--ink-3); font-weight: 600; }
+
+/* ─────────────────────────────────────────
+   FUNNEL VISUAL STRIP
+───────────────────────────────────────── */
+.funnel-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 24px;
+  background: var(--surface);
+}
+
+.fs-item {
+  padding: 20px 20px;
+  border-right: 1px solid var(--rule);
+  text-align: center;
+  transition: background 0.2s;
+}
+.fs-item:last-child { border-right: none; }
+.fs-item:hover { background: var(--bg); }
+
+.fs-ico { font-size: 26px; display: block; margin-bottom: 8px; }
+.fs-stage {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+  display: block;
+}
+.fs-label {
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+.fs-desc { font-size: 11px; color: var(--ink-2); font-weight: 300; line-height: 1.4; }
+
+/* ─────────────────────────────────────────
+   CONFIG LIST
+───────────────────────────────────────── */
+.cfg-list { list-style: none; }
+.cfg-list li {
+  display: flex;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 12.5px;
+  align-items: flex-start;
+}
+.cfg-list li:last-child { border-bottom: none; }
+.cfg-list li .dot-l {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.cfg-list li strong { display: block; font-size: 12px; font-weight: 600; margin-bottom: 1px; }
+.cfg-list li span { color: var(--ink-2); font-weight: 300; line-height: 1.5; }
+
+/* ─────────────────────────────────────────
+   PREREQ CARDS
+───────────────────────────────────────── */
+.prereq-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.prereq-card {
+  border-radius: var(--r);
+  border: 1.5px solid var(--rule);
+  background: var(--surface);
+  padding: 22px;
+  transition: all 0.2s;
+}
+.prereq-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); transform: translateY(-2px); }
+
+.prereq-card .p-ico { font-size: 24px; margin-bottom: 10px; display: block; }
+.prereq-card h5 { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.prereq-card p { font-size: 12px; color: var(--ink-2); font-weight: 300; line-height: 1.6; }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 960px) {
+  .header { padding: 0 20px; }
+  .hero { padding: 40px 20px 32px; grid-template-columns: 1fr; }
+  .hero-stats { display: none; }
+  .tabs-outer { padding: 20px 20px 0; }
+  .content { padding: 20px 20px 60px; }
+  .tabs { grid-template-columns: repeat(2, 1fr); }
+  .levels { grid-template-columns: 1fr; }
+  .step-grid, .two-col, .tips-row, .prereq-grid { grid-template-columns: 1fr; }
+  .metric-strip { grid-template-columns: 1fr 1fr; }
+  .fmt-grid { grid-template-columns: 1fr 1fr; }
+  .funnel-strip { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════ -->
+<header class="header">
+  <div class="hb-left">
+    <div class="meta-mark">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+    </div>
+    <div>
+      <div class="header-eyebrow">Meta Ads Manager</div>
+      <div class="header-name">Guía de Implementación</div>
+    </div>
+  </div>
+  <div class="hb-pill">📋 Framework Completo 2025</div>
+</header>
+
+<!-- ══ HERO ════════════════════════════════════════════ -->
+<section class="hero">
+  <div>
+    <div class="hero-kicker">
+      <span>Paso a paso</span>
+      <span class="dot-sep"></span>
+      <span>4 Objetivos</span>
+      <span class="dot-sep"></span>
+      <span>Valores en COP</span>
+    </div>
+    <h1>Implementa tu<br>pauta en <em>Meta Ads</em><br>sin margen de error.</h1>
+    <p>Guía detallada con la configuración exacta para cada objetivo de negocio: Reconocimiento, Tráfico, Clientes Potenciales y Ventas.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="h-stat">
+      <div class="h-stat-val" style="color:var(--aw)">4</div>
+      <div class="h-stat-lbl">Objetivos cubiertos</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-val" style="color:var(--tr)">32</div>
+      <div class="h-stat-lbl">Pasos documentados</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-val" style="color:var(--ld)">COP</div>
+      <div class="h-stat-lbl">Inversión en pesos colombianos</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-val" style="color:var(--sl)">✓</div>
+      <div class="h-stat-lbl">Checklists por objetivo</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TABS ════════════════════════════════════════════ -->
+<div class="tabs-outer">
+  <div class="tabs">
+    <button class="tab-btn active" data-obj="awareness" onclick="switchTab('awareness')">
+      <div class="tab-ico">🔔</div> Reconocimiento
+    </button>
+    <button class="tab-btn" data-obj="traffic" onclick="switchTab('traffic')">
+      <div class="tab-ico">🚦</div> Tráfico
+    </button>
+    <button class="tab-btn" data-obj="leads" onclick="switchTab('leads')">
+      <div class="tab-ico">📋</div> Clientes Potenciales
+    </button>
+    <button class="tab-btn" data-obj="sales" onclick="switchTab('sales')">
+      <div class="tab-ico">🛒</div> Ventas
+    </button>
+  </div>
+</div>
+
+<!-- ══ CONTENT ══════════════════════════════════════════ -->
+<div class="content">
+
+<!-- ████████████████████████████████████████
+     PANEL  RECONOCIMIENTO
+████████████████████████████████████████ -->
+<div id="panel-awareness" class="panel active">
+
+  <div class="obj-banner ob-aw" data-bignum="01">
+    <div class="obj-big-ico">🔔</div>
+    <div class="obj-text">
+      <h2>Reconocimiento de Marca</h2>
+      <p>Maximiza el alcance y la recordación de tu marca entre nuevas audiencias. Ideal para la fase de descubrimiento del funnel de ventas.</p>
+      <div class="obj-chips">
+        <span class="chip">Funnel: Top</span>
+        <span class="chip outline">CPM</span>
+        <span class="chip outline">Alcance</span>
+        <span class="chip outline">Recordación</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-strip">
+    <div class="ms-item">
+      <div class="ms-label">Métrica principal</div>
+      <div class="ms-val" style="color:var(--aw)">CPM</div>
+      <div class="ms-desc">Costo por mil impresiones</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Frecuencia ideal</div>
+      <div class="ms-val" style="color:var(--aw)">2–5×</div>
+      <div class="ms-desc">Por usuario cada 7 días</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Presupuesto mínimo</div>
+      <div class="ms-val" style="color:var(--aw)">$20K</div>
+      <div class="ms-desc">COP / día por conjunto</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Tamaño audiencia</div>
+      <div class="ms-val" style="color:var(--aw)">+1M</div>
+      <div class="ms-desc">Personas para buen alcance</div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">Estructura de la Campaña — 3 Niveles</span></div>
+    <div class="levels">
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--aw)">1</div>
+          <div class="lc-title-wrap"><h3>🏛️ Campaña</h3><span>Nivel estratégico</span></div>
+        </div>
+        <div class="cfg-row"><strong>Objetivo de campaña</strong><span>Selecciona "Reconocimiento" → Reconocimiento de marca o Alcance</span></div>
+        <div class="cfg-row"><strong>Nombre descriptivo</strong><span>[Marca] | Reconocimiento | Q1-2025</span></div>
+        <div class="cfg-row"><strong>Presupuesto CBO</strong><span>Activa Advantage Campaign Budget para distribución automática</span></div>
+        <div class="cfg-row"><strong>A/B Test</strong><span>Opcional: prueba creatividades o audiencias distintas</span></div>
+      </div>
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--aw)">2</div>
+          <div class="lc-title-wrap"><h3>📋 Conjunto de Anuncios</h3><span>Nivel táctico</span></div>
+        </div>
+        <div class="cfg-row"><strong>Tipo de compra</strong><span>Subasta o Alcance y Frecuencia (garantiza impresiones)</span></div>
+        <div class="cfg-row"><strong>Audiencia</strong><span>Intereses amplios, Lookalike 1–3% o Advantage+ Audience</span></div>
+        <div class="cfg-row"><strong>Ubicaciones</strong><span>Advantage+ Placements para mayor alcance al menor CPM</span></div>
+        <div class="cfg-row"><strong>Optimización</strong><span>Recordación del anuncio o Alcance</span></div>
+        <div class="cfg-row"><strong>Límite de frecuencia</strong><span>Máx. 2 impresiones cada 7 días</span></div>
+      </div>
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--aw)">3</div>
+          <div class="lc-title-wrap"><h3>🎨 Anuncio</h3><span>Nivel creativo</span></div>
+        </div>
+        <div class="cfg-row"><strong>Formato recomendado</strong><span>Video 6–15s, Imagen de alto impacto, Carrusel, Reels</span></div>
+        <div class="cfg-row"><strong>Identidad visual</strong><span>Logo visible en los primeros 3 segundos del video</span></div>
+        <div class="cfg-row"><strong>Copy</strong><span>Breve, emocional, centrado en la propuesta de valor de marca</span></div>
+        <div class="cfg-row"><strong>CTA</strong><span>"Más información", "Ver más", "Explorar"</span></div>
+        <div class="cfg-row"><strong>Advantage+ Creative</strong><span>Activa para optimización automática de variaciones</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Paso a Paso — Configuración Completa</span></div>
+    <div class="step-grid">
+      <div class="step-card"><div class="sn" style="background:var(--aw)">1</div><div class="sc-body"><h4>Seleccionar Objetivo de Campaña</h4><p>En el Administrador de Anuncios, clic en "Crear". Selecciona <strong>Reconocimiento</strong>. Elige entre <em>Reconocimiento de marca</em> (optimiza recordación) o <em>Alcance</em> (maximiza personas únicas).</p><div class="sc-tags"><span class="sc-tag">Campaña</span><span class="sc-tag">Paso 1 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--aw)">2</div><div class="sc-body"><h4>Configurar Presupuesto y Calendario</h4><p>Elige <strong>Presupuesto diario</strong> (control día a día) o <strong>Presupuesto total</strong> (distribuido en el período). Mínimo <strong>$20.000 COP/día</strong> para volumen estadístico. Define fechas inicio y fin.</p><div class="sc-tags"><span class="sc-tag">Presupuesto</span><span class="sc-tag">Paso 2 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--aw)">3</div><div class="sc-body"><h4>Definir la Audiencia</h4><p>Usa <strong>audiencias amplias</strong>: intereses relacionados con la categoría, datos demográficos y geografía. Evita ser muy restrictivo — el algoritmo necesita espacio para encontrar las personas más receptivas. Mínimo 500K personas.</p><div class="sc-tags"><span class="sc-tag">Audiencia</span><span class="sc-tag">Paso 3 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--aw)">4</div><div class="sc-body"><h4>Activar Advantage+ Placements</h4><p>Ubica en Feed FB/IG, Stories, Reels, Audience Network. Para reconocimiento, más ubicaciones = mayor alcance al menor CPM posible. No excluyas ubicaciones en esta fase.</p><div class="sc-tags"><span class="sc-tag">Placements</span><span class="sc-tag">Paso 4 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--aw)">5</div><div class="sc-body"><h4>Elegir Optimización y Frecuencia</h4><p>En <em>Optimización para la entrega</em> selecciona <strong>Recordación del anuncio</strong>. Activa el <strong>Límite de frecuencia</strong>: máx. 2 exposiciones cada 7 días para evitar saturación.</p><div class="sc-tags"><span class="sc-tag">Optimización</span><span class="sc-tag">Paso 5 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--aw)">6</div><div class="sc-body"><h4>Crear el Anuncio — Identidad</h4><p>Selecciona la <strong>Página de Facebook</strong> e <strong>Instagram</strong> vinculadas. Logo prominente en primeros 3 segundos si es video. Nombre de marca visible en todos los formatos.</p><div class="sc-tags"><span class="sc-tag">Identidad</span><span class="sc-tag">Paso 6 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--aw)">7</div><div class="sc-body"><h4>Crear el Anuncio — Creatividad</h4><p>Sube: <strong>Video corto 6–15 seg</strong> (mayor recordación), imágenes de alto impacto visual o Carrusel. Usa ratio 9:16 para Stories/Reels y 1:1 para feed. Formatos múltiples = más alcance.</p><div class="sc-tags"><span class="sc-tag">Creatividad</span><span class="sc-tag">Paso 7 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--aw)">8</div><div class="sc-body"><h4>Revisar y Publicar</h4><p>Usa la <strong>Vista previa</strong> en cada placement. Activa <strong>Advantage+ Creative</strong> para variaciones automáticas. Publica y espera <strong>24–48h de aprendizaje</strong> antes de evaluar resultados.</p><div class="sc-tags"><span class="sc-tag">Publicación</span><span class="sc-tag">Paso 8 / 8</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card-wrap">
+      <h3>🎬 Formatos Creativos</h3>
+      <div class="fmt-grid">
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">🎥</span><span class="fn">Video 6–15s</span><span class="fd">Mayor recordación</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">📸</span><span class="fn">Imagen</span><span class="fd">Alto impacto</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">🎠</span><span class="fn">Carrusel</span><span class="fd">Historia de marca</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">📱</span><span class="fn">Stories</span><span class="fd">Pantalla completa</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">🎞️</span><span class="fn">Reels</span><span class="fd">Alto alcance</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">🖼️</span><span class="fn">Colección</span><span class="fd">Inmersivo</span></div>
+      </div>
+    </div>
+    <div class="card-wrap">
+      <h3>👥 Tipos de Audiencia Recomendados</h3>
+      <div class="aud-chips" style="margin-bottom:14px">
+        <span class="aud-chip">🎯 Intereses amplios</span>
+        <span class="aud-chip">📍 Geográfica</span>
+        <span class="aud-chip">👶 Demográfica</span>
+        <span class="aud-chip">🔮 Lookalike 1%</span>
+        <span class="aud-chip">📊 Advantage+ Audience</span>
+        <span class="aud-chip">🏪 Comportamientos</span>
+      </div>
+      <div class="alert purple">
+        <span>💜</span>
+        <div><strong>Tamaño ideal:</strong> Entre 1M y 10M personas. Mayor audiencia = menor CPM = mayor alcance por cada peso invertido.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tips-row">
+    <div class="tip-card"><span class="tip-ico">⚡</span><h5>Regla de los 3 segundos</h5><p>El logo y mensaje clave deben aparecer en los primeros 3 segundos. El 65% de los usuarios no ve más allá en el feed.</p></div>
+    <div class="tip-card"><span class="tip-ico">🔄</span><h5>Rota creatividades cada 2 semanas</h5><p>La fatiga publicitaria reduce el recall. Renueva assets frecuentemente para mantener la efectividad en recordación.</p></div>
+    <div class="tip-card"><span class="tip-ico">📊</span><h5>Mide Estimated Ad Recall Lift</h5><p>Meta ofrece esta métrica exclusiva. Es el predictor más confiable del impacto real en la memoria del usuario.</p></div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Checklist de Validación — Pre-Publicación</span></div>
+    <ul class="checklist">
+      <li onclick="chk(this)"><div class="cb"></div><span>Objetivo de campaña configurado como "Reconocimiento"</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Presupuesto mínimo de $20.000 COP/día asignado</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Audiencia entre 1M–10M personas</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Advantage+ Placements activado</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Límite de frecuencia configurado (máx. 2 / 7 días)</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Logo visible en primeros 3 segundos del video</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Creatividad en múltiples ratios (9:16, 1:1, 4:5)</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Pixel instalado en el sitio web (para retargeting futuro)</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ████████████████████████████████████████
+     PANEL  TRÁFICO
+████████████████████████████████████████ -->
+<div id="panel-traffic" class="panel">
+
+  <div class="obj-banner ob-tr" data-bignum="02">
+    <div class="obj-big-ico">🚦</div>
+    <div class="obj-text">
+      <h2>Tráfico</h2>
+      <p>Dirige visitantes calificados a tu sitio web, app, perfil de Instagram o Messenger. Optimiza para clics de calidad o vistas reales a la página de destino.</p>
+      <div class="obj-chips">
+        <span class="chip">Funnel: Medio</span>
+        <span class="chip outline">CPC</span>
+        <span class="chip outline">CTR</span>
+        <span class="chip outline">LPV</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-strip">
+    <div class="ms-item">
+      <div class="ms-label">Métrica principal</div>
+      <div class="ms-val" style="color:var(--tr)">CPC</div>
+      <div class="ms-desc">Costo por clic al enlace</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">CTR objetivo</div>
+      <div class="ms-val" style="color:var(--tr)">+1%</div>
+      <div class="ms-desc">Tasa de clic saludable</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Presupuesto mínimo</div>
+      <div class="ms-val" style="color:var(--tr)">$20K</div>
+      <div class="ms-desc">COP / día por conjunto</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Optimización clave</div>
+      <div class="ms-val" style="color:var(--tr)">LPV</div>
+      <div class="ms-desc">Landing Page Views</div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">Estructura de la Campaña — 3 Niveles</span></div>
+    <div class="levels">
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--tr)">1</div>
+          <div class="lc-title-wrap"><h3>🏛️ Campaña</h3><span>Nivel estratégico</span></div>
+        </div>
+        <div class="cfg-row"><strong>Objetivo</strong><span>Selecciona "Tráfico"</span></div>
+        <div class="cfg-row"><strong>Destino del tráfico</strong><span>Sitio web, App, Instagram, Messenger o WhatsApp</span></div>
+        <div class="cfg-row"><strong>Nombre</strong><span>[Producto] | Tráfico Web | Ene-2025</span></div>
+        <div class="cfg-row"><strong>CBO</strong><span>Activa Advantage Campaign Budget</span></div>
+      </div>
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--tr)">2</div>
+          <div class="lc-title-wrap"><h3>📋 Conjunto de Anuncios</h3><span>Nivel táctico</span></div>
+        </div>
+        <div class="cfg-row"><strong>Pixel Meta</strong><span>OBLIGATORIO: instala y verifica el Pixel en tu sitio antes de lanzar</span></div>
+        <div class="cfg-row"><strong>Audiencia</strong><span>Intereses + comportamientos, Lookalike de compradores</span></div>
+        <div class="cfg-row"><strong>Ubicaciones</strong><span>Advantage+ o manual: Feed, Stories, Reels</span></div>
+        <div class="cfg-row"><strong>Optimización</strong><span>Vistas de página de destino (superior a clics de enlace)</span></div>
+        <div class="cfg-row"><strong>Estrategia de puja</strong><span>Costo más bajo (automático) para empezar</span></div>
+      </div>
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--tr)">3</div>
+          <div class="lc-title-wrap"><h3>🎨 Anuncio</h3><span>Nivel creativo</span></div>
+        </div>
+        <div class="cfg-row"><strong>Formato</strong><span>Imagen única, Video 15–30s, Carrusel de producto</span></div>
+        <div class="cfg-row"><strong>URL de destino</strong><span>Landing page específica con UTMs configurados</span></div>
+        <div class="cfg-row"><strong>Parámetros UTM</strong><span>?utm_source=facebook&utm_medium=cpc&utm_campaign=...</span></div>
+        <div class="cfg-row"><strong>CTA fuerte</strong><span>"Comprar ahora", "Más información", "Registrarse"</span></div>
+        <div class="cfg-row"><strong>Copy</strong><span>Beneficio claro + urgencia + propuesta de valor</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Instalación del Meta Pixel — Paso Crítico</span></div>
+    <div class="alert orange" style="margin-bottom:20px">
+      <span>⚠️</span>
+      <span><strong>El Pixel es fundamental.</strong> Sin él, Meta solo optimizará para clics que pueden no llegar a cargar el sitio — no para visitas reales (LPV).</span>
+    </div>
+    <div class="timeline">
+      <div class="tl-item"><h5>1. Crear el Pixel en el Administrador de Eventos</h5><p>Business Manager → Fuentes de Datos → Píxeles → Agregar. Copia el ID del Pixel.</p></div>
+      <div class="tl-item"><h5>2. Instalar el código base en el sitio web</h5><p>Añade el código del Pixel en el &lt;head&gt; de todas las páginas. Usa GTM o integración directa con tu CMS.</p></div>
+      <div class="tl-item"><h5>3. Verificar con Meta Pixel Helper</h5><p>Instala la extensión de Chrome "Meta Pixel Helper" y verifica que el Pixel dispara correctamente en todas las páginas clave.</p></div>
+      <div class="tl-item"><h5>4. Configurar evento PageView</h5><p>El evento fbq('track', 'PageView') debe disparar en cada página para que Meta pueda optimizar para LPV correctamente.</p></div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Paso a Paso — Configuración Completa</span></div>
+    <div class="step-grid">
+      <div class="step-card"><div class="sn" style="background:var(--tr)">1</div><div class="sc-body"><h4>Seleccionar Objetivo Tráfico + Destino</h4><p>Crea campaña → <strong>"Tráfico"</strong>. Define el destino: <strong>Sitio web</strong> (más común), App, Instagram, Messenger o WhatsApp. El destino determina qué Pixel o SDK se usará para optimizar.</p><div class="sc-tags"><span class="sc-tag">Objetivo</span><span class="sc-tag">Paso 1 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--tr)">2</div><div class="sc-body"><h4>Vincular el Pixel al Conjunto de Anuncios</h4><p>En el Ad Set, sección <strong>Conversiones</strong>, selecciona tu Pixel de Meta. Verifica que esté en verde (actividad reciente). Si está rojo, revisa la instalación antes de continuar.</p><div class="sc-tags"><span class="sc-tag">Pixel</span><span class="sc-tag">Paso 2 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--tr)">3</div><div class="sc-body"><h4>Optimizar para Vistas de Página de Destino</h4><p>En <em>Optimización para la entrega</em>, selecciona <strong>"Vistas de página de destino"</strong> (no solo "Clics en el enlace"). Meta buscará personas que realmente cargarán tu sitio completo.</p><div class="sc-tags"><span class="sc-tag">LPV</span><span class="sc-tag">Paso 3 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--tr)">4</div><div class="sc-body"><h4>Definir Audiencia de Tráfico</h4><p>Combina <strong>intereses del nicho</strong> con <strong>comportamientos de compra online</strong>. Para tráfico frío: 200K–2M personas. Considera Lookalike 1% de visitantes previos del sitio.</p><div class="sc-tags"><span class="sc-tag">Audiencia</span><span class="sc-tag">Paso 4 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--tr)">5</div><div class="sc-body"><h4>Configurar URL con Parámetros UTM</h4><p>Construye la URL con UTMs completos: <code style="font-size:11px;background:var(--bg);padding:2px 5px;border-radius:4px;">?utm_source=facebook&utm_medium=paid</code>. Usa el Constructor de URLs de Google. Valida en GA4.</p><div class="sc-tags"><span class="sc-tag">UTM</span><span class="sc-tag">Paso 5 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--tr)">6</div><div class="sc-body"><h4>Crear Copy Orientado a Clics</h4><p>El copy debe generar <strong>curiosidad o urgencia</strong> y dejar claro qué encontrarán al hacer clic. Usa números y beneficios específicos. Primeros 125 caracteres son los más visibles en feed.</p><div class="sc-tags"><span class="sc-tag">Copywriting</span><span class="sc-tag">Paso 6 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--tr)">7</div><div class="sc-body"><h4>Seleccionar Formato Visual</h4><p>Para tráfico: <strong>Imagen con texto de propuesta de valor</strong> o <strong>Video 15–30s</strong> que resuelva una duda y termine con CTA. Carrusel funciona para mostrar múltiples servicios con links individuales.</p><div class="sc-tags"><span class="sc-tag">Creatividad</span><span class="sc-tag">Paso 7 / 8</span></div></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--tr)">8</div><div class="sc-body"><h4>Monitorear CPC y CTR post-lanzamiento</h4><p>Tras 48h: CTR &lt;0.8% = creatividad débil. CPC muy alto = audiencia incorrecta. Monitorea también la tasa de rebote en el sitio para validar calidad real del tráfico enviado.</p><div class="sc-tags"><span class="sc-tag">KPIs</span><span class="sc-tag">Paso 8 / 8</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card-wrap">
+      <h3>🌐 Destinos de Tráfico Disponibles</h3>
+      <div class="fmt-grid">
+        <div class="fmt-card sel"><span class="fi">🌐</span><span class="fn">Sitio Web</span><span class="fd">Más recomendado</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">📱</span><span class="fn">App Móvil</span><span class="fd">Requiere SDK</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">📸</span><span class="fn">Instagram</span><span class="fd">Perfil o post</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">💬</span><span class="fn">Messenger</span><span class="fd">Conversación</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">📞</span><span class="fn">WhatsApp</span><span class="fd">Chat directo</span></div>
+        <div class="fmt-card" onclick="this.classList.toggle('sel')"><span class="fi">🎥</span><span class="fn">Video</span><span class="fd">Reproducción</span></div>
+      </div>
+    </div>
+    <div class="card-wrap">
+      <h3>📈 KPIs de Tráfico a Monitorear</h3>
+      <ul class="cfg-list">
+        <li><span class="dot-l" style="background:var(--tr)"></span><div><strong>CTR (Click-Through Rate)</strong><span>Objetivo: >1%. Por debajo indica problema creativo o de audiencia.</span></div></li>
+        <li><span class="dot-l" style="background:var(--tr)"></span><div><strong>CPC (Costo por Clic)</strong><span>Varía por industria. Referencia en Colombia: $1.200–$8.000 COP.</span></div></li>
+        <li><span class="dot-l" style="background:var(--tr)"></span><div><strong>LPV Rate</strong><span>% de clics que resultan en carga completa de la página de destino.</span></div></li>
+        <li><span class="dot-l" style="background:var(--tr)"></span><div><strong>Tasa de Rebote</strong><span>Monitorear en GA4. >80% indica desalineación anuncio-landing.</span></div></li>
+        <li><span class="dot-l" style="background:var(--tr)"></span><div><strong>Sesiones por fuente</strong><span>Valida en GA4 que el tráfico de Meta llega correctamente vía UTM.</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Checklist de Validación — Pre-Publicación</span></div>
+    <ul class="checklist">
+      <li onclick="chk(this)"><div class="cb"></div><span>Objetivo "Tráfico" y destino correcto seleccionados</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Pixel instalado y verificado con Pixel Helper (estado: verde)</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Optimización configurada como "Vistas de página de destino"</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>URL de destino con parámetros UTM completos</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Landing page con velocidad de carga menor a 3 segundos</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>CTA del anuncio alineado con el contenido de la landing page</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Audiencia entre 200K–2M personas</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Tráfico verificado en GA4 antes de escalar presupuesto</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ████████████████████████████████████████
+     PANEL  CLIENTES POTENCIALES
+████████████████████████████████████████ -->
+<div id="panel-leads" class="panel">
+
+  <div class="obj-banner ob-ld" data-bignum="03">
+    <div class="obj-big-ico">📋</div>
+    <div class="obj-text">
+      <h2>Clientes Potenciales</h2>
+      <p>Captura información de contacto usando formularios nativos de Meta o landing pages externas. Ideal para negocios que necesitan hablar con el prospecto antes de vender.</p>
+      <div class="obj-chips">
+        <span class="chip">Funnel: Medio-Bajo</span>
+        <span class="chip outline">CPL</span>
+        <span class="chip outline">Formularios</span>
+        <span class="chip outline">CRM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-strip">
+    <div class="ms-item">
+      <div class="ms-label">Métrica principal</div>
+      <div class="ms-val" style="color:var(--ld)">CPL</div>
+      <div class="ms-desc">Costo por lead generado</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Conversión objetivo</div>
+      <div class="ms-val" style="color:var(--ld)">10–20%</div>
+      <div class="ms-desc">Clics que se convierten</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Presupuesto mínimo</div>
+      <div class="ms-val" style="color:var(--ld)">$40K</div>
+      <div class="ms-desc">COP / día por conjunto</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Campos recomendados</div>
+      <div class="ms-val" style="color:var(--ld)">3–5</div>
+      <div class="ms-desc">Para alta conversión</div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">Estructura de la Campaña — 3 Niveles</span></div>
+    <div class="levels">
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--ld)">1</div>
+          <div class="lc-title-wrap"><h3>🏛️ Campaña</h3><span>Nivel estratégico</span></div>
+        </div>
+        <div class="cfg-row"><strong>Objetivo</strong><span>Selecciona "Clientes potenciales"</span></div>
+        <div class="cfg-row"><strong>Tipo de lead</strong><span>Formularios Instant (recomendado) o sitio web externo</span></div>
+        <div class="cfg-row"><strong>Nombre</strong><span>[Servicio] | Leads | Formulario | Feb-2025</span></div>
+        <div class="cfg-row"><strong>Presupuesto</strong><span>Mín. $40.000 COP/día para leads en las primeras 72h</span></div>
+      </div>
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--ld)">2</div>
+          <div class="lc-title-wrap"><h3>📋 Conjunto de Anuncios</h3><span>Nivel táctico</span></div>
+        </div>
+        <div class="cfg-row"><strong>Ubicación del formulario</strong><span>Formularios instantáneos (dentro de Meta) o sitio web</span></div>
+        <div class="cfg-row"><strong>Audiencia</strong><span>Específica: intereses + comportamientos + demografía</span></div>
+        <div class="cfg-row"><strong>Optimización</strong><span>Clientes potenciales o Clientes potenciales de calidad</span></div>
+        <div class="cfg-row"><strong>Exclusiones</strong><span>Excluye leads ya capturados para no gastar en duplicados</span></div>
+        <div class="cfg-row"><strong>Ubicaciones</strong><span>Feed y Stories (mejores tasas de conversión para formularios)</span></div>
+      </div>
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--ld)">3</div>
+          <div class="lc-title-wrap"><h3>🎨 Anuncio + Formulario</h3><span>Nivel creativo</span></div>
+        </div>
+        <div class="cfg-row"><strong>Oferta clara</strong><span>¿Qué recibe el lead? Consulta gratuita, demo, descuento, contenido</span></div>
+        <div class="cfg-row"><strong>Formulario instantáneo</strong><span>Máx. 3–5 campos: Nombre, Email, Teléfono + campo calificador</span></div>
+        <div class="cfg-row"><strong>Pantalla de intro</strong><span>Explica el beneficio de compartir sus datos</span></div>
+        <div class="cfg-row"><strong>Pantalla de agradecimiento</strong><span>CTA para visitar sitio o escribir por WhatsApp</span></div>
+        <div class="cfg-row"><strong>Política de privacidad</strong><span>URL OBLIGATORIA a tu política de privacidad</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-bottom:24px">
+    <div class="card-wrap" style="border:2px solid var(--ld)">
+      <h3>⚡ Formulario — Mayor Volumen</h3>
+      <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:12px;font-weight:300">Pre-rellena los datos del usuario. Menos fricción = más leads, menor calidad promedio.</p>
+      <ul class="cfg-list">
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Datos pre-llenados</strong><span>Nombre, email y teléfono tomados del perfil de Facebook</span></div></li>
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Proceso rápido</strong><span>El usuario confirma con 2 toques. Alta tasa de completación.</span></div></li>
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Ideal para</strong><span>Alto volumen, calificación inicial más baja</span></div></li>
+      </ul>
+    </div>
+    <div class="card-wrap">
+      <h3>🎯 Formulario — Mayor Intención</h3>
+      <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:12px;font-weight:300">Agrega pantalla de revisión. Más fricción = menos leads, mayor calidad e intención real.</p>
+      <ul class="cfg-list">
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Pantalla de revisión</strong><span>El usuario confirma activamente sus datos antes de enviar</span></div></li>
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Preguntas personalizadas</strong><span>Hasta 15 preguntas calificadoras (budget, timeline, empresa)</span></div></li>
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Ideal para</strong><span>B2B, servicios de alto valor, bajo volumen / alta calidad</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Paso a Paso — Creación del Formulario Instantáneo</span></div>
+    <div class="step-grid">
+      <div class="step-card"><div class="sn" style="background:var(--ld)">1</div><div class="sc-body"><h4>Elegir "Clientes Potenciales" y Tipo</h4><p>Crea la campaña con objetivo <strong>Clientes potenciales</strong>. En Ad Set, selecciona <strong>Formularios instantáneos</strong>. Esto activa el formulario nativo de Meta, sin que el usuario deba salir de la app.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--ld)">2</div><div class="sc-body"><h4>Crear el Formulario Instantáneo</h4><p>En el nivel de anuncio, clic en <strong>"Crear formulario"</strong>. Define el nombre interno del formulario. Selecciona idioma y tipo: Mayor Volumen (rápido) o Mayor Intención (calificado).</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--ld)">3</div><div class="sc-body"><h4>Diseñar la Pantalla de Introducción</h4><p>Agrega imagen/video de portada, título (máx. 60 caracteres) y descripción de la oferta. Ej: <em>"Recibe tu cotización gratuita en 24h. Completa el formulario."</em></p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--ld)">4</div><div class="sc-body"><h4>Agregar Campos y Preguntas Calificadoras</h4><p>Campos predeterminados (nombre, email, tel) + preguntas personalizadas calificadoras. Máximo <strong>3–5 campos</strong> para mantener alta conversión. Ejemplo: "¿Cuál es tu presupuesto mensual?"</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--ld)">5</div><div class="sc-body"><h4>Configurar Política de Privacidad</h4><p>Campo <strong>OBLIGATORIO</strong>. Sin la URL de tu política de privacidad, Meta no aprobará el formulario. Asegúrate de que mencione el uso de datos para contacto comercial.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--ld)">6</div><div class="sc-body"><h4>Diseñar Pantalla de Agradecimiento</h4><p>Muestra: mensaje de confirmación, próximos pasos y un <strong>CTA adicional</strong>. Opciones: "Visitar sitio web", "Hablar por WhatsApp". Cierra el loop del lead correctamente.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--ld)">7</div><div class="sc-body"><h4>Conectar CRM o Automatizar Notificaciones</h4><p>Conecta a tu CRM vía <strong>integración nativa</strong> (HubSpot, Salesforce, Zoho) o usa <strong>Zapier / Make</strong> para automatizar. También puedes descargar el CSV desde el Administrador de Anuncios.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--ld)">8</div><div class="sc-body"><h4>Optimizar por Calidad de Lead</h4><p>Si los leads son de baja calidad, activa <strong>"Clientes potenciales de calidad"</strong>. Conecta tu CRM para que Meta aprenda qué leads se convierten y optimice hacia ese perfil ideal.</p></div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card-wrap">
+      <h3>📊 Campos por Industria</h3>
+      <div class="acc-item" onclick="acc(this)">
+        <div class="acc-head">🏠 Inmobiliaria y Construcción
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><ul>
+          <li>Nombre completo</li><li>Teléfono (WhatsApp)</li><li>Email</li>
+          <li>¿Para qué necesitas el inmueble? (Vivir / Invertir)</li>
+          <li>Rango de presupuesto (Selectbox)</li>
+        </ul></div></div>
+      </div>
+      <div class="acc-item" onclick="acc(this)">
+        <div class="acc-head">🎓 Educación y Cursos
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><ul>
+          <li>Nombre</li><li>Email</li>
+          <li>¿Cuál es tu nivel actual en este tema?</li>
+          <li>¿Cuándo quieres empezar a estudiar?</li>
+        </ul></div></div>
+      </div>
+      <div class="acc-item" onclick="acc(this)">
+        <div class="acc-head">💼 Servicios B2B
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><ul>
+          <li>Nombre y Apellido</li><li>Email corporativo</li>
+          <li>Nombre de la empresa</li><li>Cargo / Rol</li>
+          <li>¿Cuántos empleados tiene tu empresa? (Selectbox)</li>
+        </ul></div></div>
+      </div>
+    </div>
+    <div class="card-wrap">
+      <h3>⚡ Integración de Leads con CRM</h3>
+      <ul class="cfg-list">
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>HubSpot (Nativo)</strong><span>Conexión directa sin código. Leads llegan en tiempo real al CRM.</span></div></li>
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Zapier / Make (No-code)</strong><span>Conecta con cualquier CRM, email o WhatsApp automáticamente.</span></div></li>
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Salesforce / Zoho (Nativo)</strong><span>Integración oficial en Business Manager → Integraciones de leads.</span></div></li>
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Descarga manual CSV</strong><span>Ad Manager → Formularios → Descargar leads. Para volúmenes pequeños.</span></div></li>
+        <li><span class="dot-l" style="background:var(--ld)"></span><div><strong>Webhook / API Graph</strong><span>Para integraciones técnicas avanzadas en tiempo real.</span></div></li>
+      </ul>
+      <div class="alert orange" style="margin-top:14px">
+        <span>⏱️</span>
+        <div><strong>Velocidad de respuesta:</strong> Contactar un lead en los primeros 5 minutos aumenta 9× la tasa de conversión a cliente.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Checklist de Validación — Pre-Publicación</span></div>
+    <ul class="checklist">
+      <li onclick="chk(this)"><div class="cb"></div><span>Objetivo "Clientes potenciales" con formulario instantáneo seleccionado</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Formulario creado con máximo 5 campos</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>URL de política de privacidad válida añadida al formulario</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Pantalla de intro con oferta o beneficio claramente descrita</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Pantalla de agradecimiento con CTA adicional configurada</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Integración con CRM o Zapier activa y probada</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Proceso de seguimiento de leads definido (quién contacta y cuándo)</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Formulario de prueba enviado y lead recibido en CRM correctamente</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ████████████████████████████████████████
+     PANEL  VENTAS
+████████████████████████████████████████ -->
+<div id="panel-sales" class="panel">
+
+  <div class="obj-banner ob-sl" data-bignum="04">
+    <div class="obj-big-ico">🛒</div>
+    <div class="obj-text">
+      <h2>Ventas (Conversiones)</h2>
+      <p>Maximiza compras, suscripciones o acciones de alto valor en tu sitio web o app. El objetivo más orientado a ROI y ROAS. Requiere Pixel con historial de compras.</p>
+      <div class="obj-chips">
+        <span class="chip">Funnel: Bottom</span>
+        <span class="chip outline">ROAS</span>
+        <span class="chip outline">CPA</span>
+        <span class="chip outline">Purchase</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-strip">
+    <div class="ms-item">
+      <div class="ms-label">Métrica principal</div>
+      <div class="ms-val" style="color:var(--sl)">ROAS</div>
+      <div class="ms-desc">Retorno sobre inversión</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">ROAS saludable</div>
+      <div class="ms-val" style="color:var(--sl)">2–4×</div>
+      <div class="ms-desc">Para la mayoría de negocios</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Presupuesto mínimo</div>
+      <div class="ms-val" style="color:var(--sl)">$80K</div>
+      <div class="ms-desc">COP / día para salir del aprendizaje</div>
+    </div>
+    <div class="ms-item">
+      <div class="ms-label">Conversiones necesarias</div>
+      <div class="ms-val" style="color:var(--sl)">50+</div>
+      <div class="ms-desc">Por semana para optimizar bien</div>
+    </div>
+  </div>
+
+  <div class="prereq-grid">
+    <div class="prereq-card" style="border:2px solid var(--sl)">
+      <span class="p-ico">📡</span>
+      <h5>Pixel + Evento Purchase</h5>
+      <p>El Pixel debe estar instalado Y el evento <code style="font-size:11px">fbq('track', 'Purchase')</code> disparar en la página de confirmación con value y currency correctos.</p>
+    </div>
+    <div class="prereq-card">
+      <span class="p-ico">📊</span>
+      <h5>Historial de conversiones</h5>
+      <p>Idealmente 50+ eventos de compra en los últimos 30 días. Con menos datos, Meta no puede optimizar correctamente y el aprendizaje toma más tiempo.</p>
+    </div>
+    <div class="prereq-card">
+      <span class="p-ico">🛍️</span>
+      <h5>Catálogo de productos</h5>
+      <p>Para remarketing dinámico necesitas un catálogo conectado. Permite mostrar automáticamente los productos exactos que cada usuario visitó pero no compró.</p>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">Estructura de la Campaña — 3 Niveles</span></div>
+    <div class="levels">
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--sl)">1</div>
+          <div class="lc-title-wrap"><h3>🏛️ Campaña</h3><span>Nivel estratégico</span></div>
+        </div>
+        <div class="cfg-row"><strong>Objetivo</strong><span>Selecciona "Ventas" → Conversiones en el sitio web</span></div>
+        <div class="cfg-row"><strong>Advantage+ Shopping</strong><span>Considera A+SC para e-commerce con catálogo activo</span></div>
+        <div class="cfg-row"><strong>CBO</strong><span>Activa Advantage Campaign Budget</span></div>
+        <div class="cfg-row"><strong>Nombre</strong><span>[Producto] | Ventas | Compra | Mar-2025</span></div>
+      </div>
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--sl)">2</div>
+          <div class="lc-title-wrap"><h3>📋 Conjunto de Anuncios</h3><span>Nivel táctico</span></div>
+        </div>
+        <div class="cfg-row"><strong>Evento de conversión</strong><span>Selecciona "Compra" (Purchase) — OBLIGATORIO</span></div>
+        <div class="cfg-row"><strong>Audiencia de retargeting</strong><span>Visitantes del sitio, abandono de carrito, usuarios de alto valor</span></div>
+        <div class="cfg-row"><strong>Audiencia fría</strong><span>Lookalike 1% de compradores + intereses + intención de compra</span></div>
+        <div class="cfg-row"><strong>Puja</strong><span>ROAS objetivo o CPA objetivo si tienes historial suficiente</span></div>
+        <div class="cfg-row"><strong>Ubicaciones</strong><span>Advantage+ o manual: Feed, Stories (excluye AudienceNet si no convierte)</span></div>
+      </div>
+      <div class="level-col">
+        <div class="lc-head">
+          <div class="lc-num" style="background:var(--sl)">3</div>
+          <div class="lc-title-wrap"><h3>🎨 Anuncio</h3><span>Nivel creativo</span></div>
+        </div>
+        <div class="cfg-row"><strong>Formato</strong><span>Imagen de producto, Carrusel, Dynamic Product Ads (DPA)</span></div>
+        <div class="cfg-row"><strong>Dynamic Ads</strong><span>Para catálogos: muestra el producto exacto que vio cada usuario</span></div>
+        <div class="cfg-row"><strong>Copy de conversión</strong><span>Precio, descuento, urgencia, garantía, beneficio clave</span></div>
+        <div class="cfg-row"><strong>CTA</strong><span>"Comprar ahora", "Obtener oferta", "Añadir al carrito"</span></div>
+        <div class="cfg-row"><strong>URL</strong><span>Página de producto o checkout con UTMs y Pixel verificado</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Estrategia de Funnel Completo</span></div>
+    <div class="funnel-strip">
+      <div class="fs-item">
+        <span class="fs-ico">🔔</span>
+        <span class="fs-stage">Top of Funnel</span>
+        <span class="fs-label">Descubrimiento</span>
+        <span class="fs-desc">Lookalike 1% + Intereses amplios. Objetivo: Reconocimiento.</span>
+      </div>
+      <div class="fs-item">
+        <span class="fs-ico">🚦</span>
+        <span class="fs-stage">Mid Funnel</span>
+        <span class="fs-label">Consideración</span>
+        <span class="fs-desc">Retargeting visitantes. Ver producto + videos. Objetivo: Tráfico.</span>
+      </div>
+      <div class="fs-item">
+        <span class="fs-ico">🛒</span>
+        <span class="fs-stage">Bottom Funnel</span>
+        <span class="fs-label">Conversión</span>
+        <span class="fs-desc">Abandono de carrito. Dynamic Ads. Objetivo: Ventas.</span>
+      </div>
+      <div class="fs-item">
+        <span class="fs-ico">🔄</span>
+        <span class="fs-stage">Post-Compra</span>
+        <span class="fs-label">Retención</span>
+        <span class="fs-desc">Upsell / Cross-sell. Audiencias de compradores. Objetivo: Ventas.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Paso a Paso — Configuración Completa</span></div>
+    <div class="step-grid">
+      <div class="step-card"><div class="sn" style="background:var(--sl)">1</div><div class="sc-body"><h4>Verificar Pixel y Evento de Compra</h4><p>Confirma en el <strong>Administrador de Eventos</strong> que el evento <code style="font-size:11px;background:var(--bg);padding:1px 4px;border-radius:3px">Purchase</code> se dispara con los parámetros value y currency. Usa el Test de Eventos de Meta.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--sl)">2</div><div class="sc-body"><h4>Seleccionar Objetivo Ventas + Evento</h4><p>Crea campaña → <strong>"Ventas"</strong>. En el Ad Set, en <em>Evento de conversión</em>, selecciona <strong>Compra (Purchase)</strong>. Si está en gris, el Pixel no tiene suficientes compras recientes.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--sl)">3</div><div class="sc-body"><h4>Configurar Audiencias por Temperatura</h4><p>Crea <strong>3 Ad Sets</strong>: (1) Retargeting abandonos de carrito (7 días), (2) Retargeting visitantes del sitio (30 días), (3) Lookalike 1% de compradores existentes.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--sl)">4</div><div class="sc-body"><h4>Definir Estrategia de Puja</h4><p>Empieza con <strong>"Costo más bajo"</strong> (automático). Una vez con datos, prueba <strong>ROAS objetivo</strong> (ej: 3x) o <strong>CPA objetivo</strong>. No pongas ROAS muy alto al inicio sin datos históricos.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--sl)">5</div><div class="sc-body"><h4>Crear Anuncios de Conversión</h4><p>Copy de conversión: <strong>precio o % de descuento</strong>, propuesta de valor única, prueba social (reseñas) y urgencia (stock limitado / oferta por tiempo). Visual: foto de producto en uso.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--sl)">6</div><div class="sc-body"><h4>Activar Anuncios Dinámicos (DPA)</h4><p>Si tienes catálogo, activa <strong>Dynamic Product Ads</strong>. Meta muestra automáticamente los productos exactos que cada usuario visitó pero no compró. Conversión hasta 3× mayor en retargeting.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--sl)">7</div><div class="sc-body"><h4>Monitorear la Fase de Aprendizaje</h4><p>Las primeras 48–72h son la <strong>"fase de aprendizaje"</strong>. No hagas cambios. Meta necesita <strong>50 conversiones por semana</strong> para estabilizar el delivery y salir del aprendizaje.</p></div></div>
+      <div class="step-card"><div class="sn" style="background:var(--sl)">8</div><div class="sc-body"><h4>Escalar con Advantage+ Shopping</h4><p>Para e-commerce con catálogo, considera <strong>Advantage+ Shopping Campaigns</strong>: Meta gestiona audiencias y creatividades automáticamente. Requiere 30 días de datos de compra activos.</p></div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card-wrap">
+      <h3>💰 Estrategias de Puja para Ventas</h3>
+      <ul class="cfg-list">
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>Costo más bajo (Auto)</strong><span>Para inicio. Meta maximiza conversiones dentro del presupuesto sin restricciones de CPA.</span></div></li>
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>CPA objetivo</strong><span>Con +50 compras/semana. Controlas el costo por compra máximo permitido.</span></div></li>
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>ROAS objetivo</strong><span>Para e-commerce con valores variables. Define el retorno mínimo requerido. Ej: 3×.</span></div></li>
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>Puja manual</strong><span>Avanzado. Controlas la puja máxima en cada subasta. Requiere experiencia.</span></div></li>
+      </ul>
+      <div class="alert green" style="margin-top:14px">
+        <span>📈</span>
+        <div>Un ROAS de 2–4× es considerado saludable para la mayoría de e-commerces. Varía según el margen de ganancia del producto.</div>
+      </div>
+    </div>
+    <div class="card-wrap">
+      <h3>🎯 Segmentos de Retargeting para Ventas</h3>
+      <ul class="cfg-list">
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>Abandono de carrito (7 días)</strong><span>Mayor intención. Mostrar el producto exacto + urgencia + oferta.</span></div></li>
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>Visitantes de página de producto (14d)</strong><span>Vieron pero no compraron. Anuncio con reseñas o descuento.</span></div></li>
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>Checkout iniciado (7d)</strong><span>Muy alta intención. Incentivo final: envío gratis o descuento 10%.</span></div></li>
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>Compradores anteriores (180d)</strong><span>Upsell, cross-sell. Ya confían — la segunda compra es mucho más fácil.</span></div></li>
+        <li><span class="dot-l" style="background:var(--sl)"></span><div><strong>Lookalike de compradores (1%)</strong><span>Audiencia fría más calificada: gemelos digitales de tus clientes reales.</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Checklist de Validación — Pre-Publicación</span></div>
+    <ul class="checklist">
+      <li onclick="chk(this)"><div class="cb"></div><span>Pixel con evento "Purchase" disparando con value y currency correctos</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Mínimo 50 compras registradas en los últimos 30 días en el Pixel</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Objetivo "Ventas" y evento de conversión "Compra" seleccionados</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Catálogo de productos creado y sincronizado (si aplica para DPA)</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Audiencias de retargeting creadas (carrito, visitantes, compradores)</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Puja configurada como "Costo más bajo" para el lanzamiento inicial</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>Copy incluye precio, descuento u oferta específica con urgencia</span></li>
+      <li onclick="chk(this)"><div class="cb"></div><span>URL con UTMs configurados y proceso de checkout verificado y funcional</span></li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- end .content -->
+
+<script>
+  function switchTab(obj) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.tab-btn[data-obj="${obj}"]`).classList.add('active');
+    document.getElementById(`panel-${obj}`).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function chk(li) { li.classList.toggle('chk'); }
+  function acc(item) { item.classList.toggle('open'); }
+</script>
+</body>
+</html>
