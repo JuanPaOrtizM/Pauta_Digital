@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conectar Meta Ads con Claude en Visual Studio Code — Guía paso a paso</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --ivory:#FBF7EF;
+    --ivory-2:#F3EBDC;
+    --ink:#1B1A17;
+    --ink-soft:#4A473F;
+    --meta-blue:#0866FF;
+    --meta-blue-dark:#0550CC;
+    --meta-blue-tint:#E8F0FF;
+    --clay:#C96A3E;
+    --green:#1E8E5A;
+    --green-tint:#E6F4EC;
+    --amber:#B4790C;
+    --amber-tint:#FBF0DC;
+    --line:#E4DCC9;
+    --card:#FFFFFF;
+    --code-bg:#20241F;
+    --code-text:#E9F5E9;
+    --radius:16px;
+    --shadow: 0 2px 14px rgba(27,26,23,0.06);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:'Sora',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;}
+
+  h1,h2,h3,h4{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    color:var(--ink);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  a{color:var(--meta-blue-dark); text-decoration-thickness:1px;}
+
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(circle at 85% -10%, rgba(8,102,255,0.14), transparent 55%),
+      radial-gradient(circle at 5% 0%, rgba(201,106,62,0.10), transparent 45%),
+      var(--ivory);
+    padding:64px 0 48px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Sora',sans-serif; font-weight:700; font-size:12.5px;
+    letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--meta-blue-dark);
+    background:var(--meta-blue-tint);
+    padding:7px 14px; border-radius:999px;
+    margin-bottom:22px;
+  }
+  .hero h1{
+    font-size:clamp(32px,5vw,50px);
+    line-height:1.08;
+    max-width:14ch;
+  }
+  .hero h1 em{ color:var(--meta-blue); font-style:normal; }
+  .hero p.lead{
+    font-size:18px; color:var(--ink-soft); max-width:60ch; margin-top:18px;
+  }
+  .badges{ display:flex; gap:10px; flex-wrap:wrap; margin-top:28px; }
+  .badge{
+    display:flex; align-items:center; gap:7px;
+    background:var(--card); border:1px solid var(--line);
+    border-radius:10px; padding:9px 13px; font-size:13.5px; font-weight:600;
+    color:var(--ink-soft);
+  }
+  .badge svg{width:16px;height:16px;flex:none;}
+
+  /* ---------- MAP DIAGRAM ---------- */
+  .flowmap{
+    margin:36px 0 0; display:flex; align-items:center; gap:0; flex-wrap:wrap;
+  }
+  .flow-node{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; flex:1; min-width:150px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .flow-node .k{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--meta-blue-dark);}
+  .flow-node .v{ font-family:'Fraunces',serif; font-size:16px; font-weight:600;}
+  .flow-node .d{ font-size:12.5px; color:var(--ink-soft); }
+  .flow-arrow{ flex:none; width:34px; height:34px; display:grid; place-items:center; color:var(--ink-soft); }
+
+  /* ---------- SECTIONS ---------- */
+  section{ padding:56px 0; }
+  section.alt{ background:var(--ivory-2); }
+  .section-head{ margin-bottom:32px; max-width:70ch; }
+  .kicker{
+    font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--clay); margin-bottom:10px; display:block;
+  }
+  .section-head h2{ font-size:clamp(24px,3.4vw,32px); }
+  .section-head p{ color:var(--ink-soft); margin-top:10px; font-size:16px; }
+
+  /* ---------- REQUISITOS ---------- */
+  .req-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+  @media (max-width:640px){ .req-grid{grid-template-columns:1fr;} }
+  .req-item{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px; display:flex; gap:14px; align-items:flex-start; box-shadow:var(--shadow);
+  }
+  .req-icon{
+    flex:none; width:38px; height:38px; border-radius:10px;
+    background:var(--meta-blue-tint); color:var(--meta-blue-dark);
+    display:grid; place-items:center;
+  }
+  .req-icon svg{ width:20px; height:20px; }
+  .req-item h4{ font-size:15.5px; margin-bottom:4px; }
+  .req-item p{ font-size:13.8px; color:var(--ink-soft); margin:0;}
+
+  /* ---------- STEP CARD ---------- */
+  .step{
+    display:flex; gap:22px; padding:30px 0;
+    border-top:1px solid var(--line);
+  }
+  .step:first-of-type{ border-top:none; }
+  .step-num{
+    flex:none; width:46px; height:46px; border-radius:50%;
+    background:var(--meta-blue); color:#fff; font-family:'Fraunces',serif;
+    font-weight:600; font-size:19px; display:grid; place-items:center;
+    box-shadow:0 4px 10px rgba(8,102,255,0.25);
+  }
+  .step-body{ flex:1; min-width:0; }
+  .step-body h3{ font-size:21px; margin-bottom:8px; }
+  .step-body > p{ color:var(--ink-soft); font-size:15.5px; margin:0 0 16px; }
+
+  .clic-block{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; margin:14px 0; box-shadow:var(--shadow);
+  }
+  .clic-title{
+    display:flex; align-items:center; gap:8px; font-weight:700; font-size:13px;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--meta-blue-dark);
+    margin-bottom:12px;
+  }
+  .clic-title svg{width:15px;height:15px;}
+  .clic-block ol{ margin:0; padding-left:20px; font-size:14.8px; color:var(--ink); }
+  .clic-block ol li{ margin-bottom:8px; }
+  .clic-block ol li:last-child{ margin-bottom:0; }
+  .clic-block code.inline{
+    background:var(--ivory-2); border:1px solid var(--line); border-radius:5px;
+    padding:1.5px 6px; font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:13px;
+  }
+
+  pre.code{
+    background:var(--code-bg); color:var(--code-text); border-radius:12px;
+    padding:16px 18px; overflow-x:auto; font-size:13.6px; line-height:1.55;
+    font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; margin:14px 0;
+    position:relative;
+  }
+  pre.code .comment{ color:#8FB99A; }
+
+  .callout{
+    border-radius:14px; padding:16px 18px; margin:16px 0; display:flex; gap:12px;
+    font-size:14.5px; border:1px solid transparent;
+  }
+  .callout svg{ flex:none; width:20px; height:20px; margin-top:1px; }
+  .callout.tip{ background:var(--green-tint); color:#0F5C39; }
+  .callout.tip svg{ color:var(--green); }
+  .callout.warn{ background:var(--amber-tint); color:#7A5209; }
+  .callout.warn svg{ color:var(--amber); }
+  .callout.info{ background:var(--meta-blue-tint); color:#0A3D8F; }
+  .callout.info svg{ color:var(--meta-blue-dark); }
+  .callout b{ font-weight:700; }
+
+  .expect{
+    font-size:13.6px; color:var(--ink-soft); border-left:3px solid var(--line);
+    padding-left:12px; margin-top:6px;
+  }
+  .expect b{ color:var(--ink); }
+
+  /* ---------- ROUTE TOGGLE CARDS ---------- */
+  .route-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:18px 0 6px; }
+  @media (max-width:700px){ .route-grid{grid-template-columns:1fr;} }
+  .route-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:22px; box-shadow:var(--shadow); position:relative;
+  }
+  .route-card.rec{ border-color:var(--meta-blue); }
+  .route-tag{
+    position:absolute; top:-11px; left:20px; background:var(--meta-blue); color:#fff;
+    font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px;
+  }
+  .route-card h4{ font-size:17px; margin-bottom:8px; }
+  .route-card p{ font-size:14px; color:var(--ink-soft); margin:0 0 10px; }
+  .route-card ul{ margin:0; padding-left:18px; font-size:13.6px; color:var(--ink-soft); }
+  .route-card ul li{ margin-bottom:4px; }
+
+  /* ---------- TROUBLESHOOTING TABLE ---------- */
+  .tbl{ width:100%; border-collapse:collapse; background:var(--card); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); }
+  .tbl th, .tbl td{ padding:13px 16px; text-align:left; font-size:14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .tbl th{ background:var(--ivory-2); font-family:'Sora',sans-serif; font-weight:700; font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); }
+  .tbl tr:last-child td{ border-bottom:none; }
+  .tbl code.inline{ background:var(--ivory-2); border:1px solid var(--line); border-radius:5px; padding:1.5px 6px; font-family:ui-monospace,monospace; font-size:12.5px;}
+
+  /* ---------- GLOSARIO ---------- */
+  .glossary{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+  @media (max-width:640px){ .glossary{grid-template-columns:1fr;} }
+  .gterm{ border-left:3px solid var(--meta-blue); padding-left:14px; }
+  .gterm dt{ font-family:'Fraunces',serif; font-weight:600; font-size:15.5px; margin-bottom:3px; }
+  .gterm dd{ margin:0; font-size:13.8px; color:var(--ink-soft); }
+
+  /* ---------- FOOTER ---------- */
+  footer{ padding:44px 0 60px; border-top:1px solid var(--line); }
+  footer .cols{ display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+  footer h4{ font-size:14px; margin-bottom:10px; }
+  footer ul{ list-style:none; margin:0; padding:0; font-size:13.8px; }
+  footer li{ margin-bottom:7px; }
+  footer .note{ font-size:12.5px; color:var(--ink-soft); margin-top:28px; max-width:70ch; }
+
+  /* checklist icon list used in prerequisitos */
+  .chk{ list-style:none; margin:0; padding:0; }
+  .chk li{ display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; font-size:14.6px; }
+  .chk svg{ flex:none; width:17px; height:17px; margin-top:3px; color:var(--green); }
+
+  /* progress index */
+  .toc{ display:flex; flex-wrap:wrap; gap:8px; margin-top:26px; }
+  .toc a{
+    font-size:12.8px; font-weight:600; color:var(--ink-soft); text-decoration:none;
+    background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 12px;
+  }
+  .toc a:hover{ color:var(--meta-blue-dark); border-color:var(--meta-blue); }
+
+  .num-pill{ font-family:'Fraunces',serif; color:var(--meta-blue-dark); font-weight:600; }
+
+  @media print{ .toc,.badges{display:none;} }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      Seminario de Pauta Digital · Meta Ads + IA
+    </span>
+    <h1>Conectar <em>Meta Ads</em> con Claude desde Visual Studio Code</h1>
+    <p class="lead">Guía paso a paso para autenticar tu Business Manager, instalar Claude Code en VS&nbsp;Code y empezar a leer y gestionar tus campañas de Meta directamente desde tu editor, en lenguaje natural.</p>
+
+    <div class="badges">
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        ~35–45 min
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 20h16M4 20V10l8-6 8 6v10M9 20v-6h6v6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        Nivel intermedio
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-1.5L12 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Función en beta abierta (lanzada el 29 abr. 2026)
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 9h18" stroke="currentColor" stroke-width="2"/></svg>
+        Requiere Business Manager
+      </span>
+    </div>
+
+    <div class="flowmap">
+      <div class="flow-node">
+        <span class="k">Origen</span>
+        <span class="v">Meta Business Manager</span>
+        <span class="d">Tu cuenta publicitaria y campañas reales</span>
+      </div>
+      <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="flow-node">
+        <span class="k">Puente</span>
+        <span class="v">Meta Ads AI Connectors</span>
+        <span class="d">MCP oficial / CLI de Meta — autenticación OAuth</span>
+      </div>
+      <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="flow-node">
+        <span class="k">Destino</span>
+        <span class="v">Claude Code en VS Code</span>
+        <span class="d">Preguntas y acciones en lenguaje natural</span>
+      </div>
+    </div>
+
+    <nav class="toc">
+      <a href="#requisitos">Requisitos</a>
+      <a href="#paso1">1. Instalar VS Code y Node.js</a>
+      <a href="#paso2">2. Instalar Claude Code</a>
+      <a href="#paso3">3. Iniciar sesión</a>
+      <a href="#paso4">4. Conectar Meta Ads</a>
+      <a href="#paso5">5. Autorizar tu cuenta</a>
+      <a href="#paso6">6. Verificar la conexión</a>
+      <a href="#paso7">7. Primeras instrucciones</a>
+      <a href="#seguridad">Seguridad</a>
+      <a href="#problemas">Solución de problemas</a>
+      <a href="#glosario">Glosario</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ REQUISITOS ============ -->
+<section id="requisitos">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Antes de empezar</span>
+      <h2>Lo que necesitas tener listo</h2>
+      <p>Revisa esta lista antes de iniciar. Si te falta algo, el resto de la guía te indicará dónde conseguirlo.</p>
+    </div>
+    <div class="req-grid">
+      <div class="req-item">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="2"/></svg></div>
+        <div>
+          <h4>Acceso a Business Manager</h4>
+          <p>Necesitas rol de <b>administrador</b> (o al menos acceso a la cuenta publicitaria con permiso <code style="font-size:12.5px">ads_management</code> o <code style="font-size:12.5px">ads_read</code>) sobre el portafolio de negocio que vas a conectar.</p>
+        </div>
+      </div>
+      <div class="req-item">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg></div>
+        <div>
+          <h4>Cuenta de Claude activa</h4>
+          <p>Un plan Claude Pro, Max, Team o Enterprise (o acceso a la API de Anthropic con facturación configurada). El plan gratuito no permite conectar herramientas externas.</p>
+        </div>
+      </div>
+      <div class="req-item">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 17l6-10 4 6 3-4 3 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/></svg></div>
+        <div>
+          <h4>Visual Studio Code</h4>
+          <p>Versión 1.98 o superior. Si ya lo tienes instalado, verifica la versión desde <code style="font-size:12.5px">Ayuda → Acerca de</code>.</p>
+        </div>
+      </div>
+      <div class="req-item">
+        <div class="req-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M8 3L4 7l4 4M16 3l4 4-4 4M14 21l-4-14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h4>Node.js 18 o superior</h4>
+          <p>Necesario para instalar el CLI de Claude Code y las herramientas de Meta por línea de comandos (<code style="font-size:12.5px">npm</code>).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info" style="margin-top:22px;">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v.01M12 11v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+      <div><b>Sobre esta guía:</b> Meta lanzó sus conectores oficiales de IA para Ads («Meta Ads AI Connectors») el 29 de abril de 2026, en beta abierta. Las capturas, nombres exactos de comandos y flujos de autorización pueden cambiar mientras Meta ajusta la función. Si algún paso no coincide exactamente con lo que ves en tu pantalla, revisa la sección de <a href="#problemas">Solución de problemas</a> y los enlaces oficiales al final de esta guía.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PASO 1 ============ -->
+<section class="alt" id="paso1">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Instalación base</span>
+      <h2>Paso 1 · Instalar Visual Studio Code y Node.js</h2>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Descargar e instalar Visual Studio Code</h3>
+        <p>VS Code es el editor donde vas a conversar con Claude y ejecutar comandos. Es gratuito y funciona en Windows, macOS y Linux.</p>
+        <div class="clic-block">
+          <div class="clic-title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Cómo hacerlo, clic a clic
+          </div>
+          <ol>
+            <li>Entra a <code class="inline">code.visualstudio.com</code> y haz clic en el botón grande <code class="inline">Download for [tu sistema operativo]</code> (se detecta automáticamente).</li>
+            <li>Ejecuta el instalador descargado y acepta las opciones por defecto (marca la casilla <code class="inline">Add to PATH</code> si aparece en Windows).</li>
+            <li>Abre VS Code una vez termine la instalación.</li>
+          </ol>
+          <div class="expect"><b>Resultado esperado:</b> se abre la pantalla de bienvenida de VS Code con el logo azul característico.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Instalar Node.js</h3>
+        <p>Node.js incluye <code class="inline" style="background:transparent;border:none;padding:0;">npm</code>, el gestor de paquetes que usaremos para instalar el CLI de Claude Code y, más adelante, las herramientas de Meta.</p>
+        <div class="clic-block">
+          <div class="clic-title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Cómo hacerlo, clic a clic
+          </div>
+          <ol>
+            <li>Entra a <code class="inline">nodejs.org</code> y descarga la versión marcada como <code class="inline">LTS</code> (recomendada, no la "Current").</li>
+            <li>Ejecuta el instalador con las opciones por defecto.</li>
+            <li>Abre una terminal (en VS Code: menú <code class="inline">Terminal → New Terminal</code>, o el atajo <code class="inline">Ctrl+`</code> / <code class="inline">Cmd+`</code>) y confirma la instalación:</li>
+          </ol>
+          <pre class="code">node --version
+npm --version</pre>
+          <div class="expect"><b>Resultado esperado:</b> dos números de versión, por ejemplo <b>v20.x.x</b> y <b>10.x.x</b>. Si ves «command not found», reinicia VS Code o tu computador y vuelve a intentarlo — a veces el PATH tarda en actualizarse.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PASO 2 ============ -->
+<section id="paso2">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Claude en tu editor</span>
+      <h2>Paso 2 · Instalar Claude Code en VS Code</h2>
+      <p>Claude Code puede vivir en VS Code de dos formas complementarias: la <b>extensión</b> (panel gráfico con vista de cambios) y el <b>CLI</b> (línea de comandos, dentro de la terminal integrada). Vamos a instalar ambas, porque la extensión no añade automáticamente <code class="inline">claude</code> al PATH de la terminal.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Instalar la extensión Claude Code</h3>
+        <div class="clic-block">
+          <div class="clic-title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Cómo hacerlo, clic a clic
+          </div>
+          <ol>
+            <li>En VS Code, presiona <code class="inline">Ctrl+Shift+X</code> (Windows/Linux) o <code class="inline">Cmd+Shift+X</code> (Mac) para abrir el panel de Extensiones.</li>
+            <li>Escribe <code class="inline">Claude Code</code> en el buscador.</li>
+            <li>Selecciona la extensión publicada por <b>Anthropic</b> (verifica el nombre del publicador antes de instalar) y haz clic en <code class="inline">Install</code>.</li>
+            <li>Si no aparece el ícono después de instalar, ejecuta <code class="inline">Developer: Reload Window</code> desde la Paleta de Comandos (<code class="inline">Ctrl+Shift+P</code> / <code class="inline">Cmd+Shift+P</code>).</li>
+          </ol>
+          <div class="expect"><b>Resultado esperado:</b> aparece un ícono de chispa (✱) en la barra de actividad lateral de VS Code.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Instalar el CLI de Claude Code (para usarlo en la terminal)</h3>
+        <p>Esto es lo que necesitas para poder escribir <code class="inline">claude</code> directamente en la terminal integrada de VS Code — imprescindible para el resto de esta guía.</p>
+        <div class="clic-block">
+          <div class="clic-title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Cómo hacerlo, clic a clic
+          </div>
+          <ol>
+            <li>Abre una terminal en VS Code (<code class="inline">Ctrl+`</code> / <code class="inline">Cmd+`</code>).</li>
+            <li>Ejecuta:</li>
+          </ol>
+          <pre class="code">npm install -g @anthropic-ai/claude-code</pre>
+          <ol start="3">
+            <li>Verifica que quedó instalado:</li>
+          </ol>
+          <pre class="code">claude --version</pre>
+          <div class="expect"><b>Resultado esperado:</b> un número de versión, por ejemplo <b>2.1.x</b>. Si aparece «command not found», tu carpeta global de <code class="inline">npm</code> no está en el PATH — cierra y vuelve a abrir la terminal, o agrega manualmente la ruta que indica <code class="inline">npm config get prefix</code>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PASO 3 ============ -->
+<section class="alt" id="paso3">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Autenticación</span>
+      <h2>Paso 3 · Iniciar sesión en Claude Code</h2>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Abrir tu carpeta de trabajo</h3>
+        <p>Claude Code trabaja sobre una carpeta (workspace), no sobre archivos sueltos. Crea o abre una carpeta dedicada a este ejercicio.</p>
+        <div class="clic-block">
+          <div class="clic-title"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cómo hacerlo, clic a clic</div>
+          <ol>
+            <li>Menú <code class="inline">File → Open Folder…</code> (o <code class="inline">Archivo → Abrir carpeta…</code>).</li>
+            <li>Crea una carpeta nueva, por ejemplo <code class="inline">meta-ads-claude</code>, y ábrela.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Iniciar sesión</h3>
+        <div class="clic-block">
+          <div class="clic-title"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cómo hacerlo, clic a clic</div>
+          <ol>
+            <li>En la terminal integrada, escribe:</li>
+          </ol>
+          <pre class="code">claude</pre>
+          <ol start="2">
+            <li>La primera vez, Claude Code te preguntará cómo quieres autenticarte. Elige la opción que corresponda a tu cuenta: <code class="inline">Claude.ai (suscripción)</code>, <code class="inline">Anthropic Console (API)</code>, o tu proveedor institucional (Bedrock/Vertex/Foundry).</li>
+            <li>Se abrirá tu navegador. Haz clic en <code class="inline">Authorize</code>.</li>
+            <li>Vuelve a VS Code: la terminal debe mostrar el prompt de Claude Code activo.</li>
+          </ol>
+          <div class="expect"><b>Resultado esperado:</b> ves el prompt interactivo de Claude Code (una línea con el símbolo <b>&gt;</b>) listo para recibir instrucciones.</div>
+        </div>
+        <div class="callout tip">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+          <div>Si prefieres el panel gráfico en lugar de la terminal, abre el ícono de chispa (✱) en la barra lateral: la extensión usa la misma sesión iniciada.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PASO 4 — CONECTAR META ADS ============ -->
+<section id="paso4">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">El paso clave</span>
+      <h2>Paso 4 · Conectar Meta Ads</h2>
+      <p>Meta ofrece dos vías oficiales para que una IA acceda a tu Business Manager, bajo el nombre <b>Meta Ads AI Connectors</b>: un servidor <b>MCP</b> (pensado para clientes conversacionales) y un <b>CLI</b> propio (pensado para flujos de terminal, como Claude Code). Elige según cómo vayas a trabajar — puedes usar cualquiera, o ambos.</p>
+    </div>
+
+    <div class="route-grid">
+      <div class="route-card rec">
+        <span class="route-tag">Recomendada para VS Code</span>
+        <h4>Ruta A · CLI oficial de Meta</h4>
+        <p>Se instala como cualquier paquete de <code class="inline">npm</code> y Claude Code lo invoca como comandos de terminal. Evita el flujo de autorización por navegador integrado en el agente, así que es la opción más estable para trabajar dentro de VS Code hoy.</p>
+        <ul>
+          <li>Autenticación propia (<code class="inline">meta login</code>), separada de Claude</li>
+          <li>Ideal para pedirle a Claude que ejecute comandos por ti</li>
+          <li>Ve al bloque <b>Ruta A</b> más abajo</li>
+        </ul>
+      </div>
+      <div class="route-card">
+        <span class="route-tag" style="background:var(--clay);">Alternativa</span>
+        <h4>Ruta B · Conector MCP oficial</h4>
+        <p>Se agrega como un servidor MCP remoto dentro de Claude Code. Es la vía pensada para chats de lenguaje natural, pero a la fecha de esta guía presenta fallas conocidas de autorización específicamente en Claude Code (ver aviso más abajo).</p>
+        <ul>
+          <li>Autorización vía OAuth de Meta, dentro de Claude</li>
+          <li>Funciona de forma estable en Claude.ai (web) y Claude Desktop</li>
+          <li>Ve al bloque <b>Ruta B</b> más abajo</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RUTA A -->
+    <div class="step" style="margin-top:8px;">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <h3>Ruta A — Instalar y autenticar el CLI de Meta Ads</h3>
+        <div class="clic-block">
+          <div class="clic-title"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cómo hacerlo, clic a clic</div>
+          <ol>
+            <li>En la terminal integrada de VS Code (fuera de la sesión de <code class="inline">claude</code>, en la línea de comandos normal), instala el CLI de Meta:</li>
+          </ol>
+          <pre class="code">npm install -g @meta/ads-cli</pre>
+          <ol start="2">
+            <li>Inicia el proceso de autenticación:</li>
+          </ol>
+          <pre class="code">meta login</pre>
+          <ol start="3">
+            <li>Se abrirá tu navegador con el flujo de inicio de sesión de Facebook Business. Ingresa tus credenciales de Meta Business Manager.</li>
+            <li>Selecciona el <b>portafolio de negocio</b> y la <b>cuenta publicitaria</b> que quieres conectar, y aprueba los permisos solicitados (como mínimo <code class="inline">ads_read</code>; añade <code class="inline">ads_management</code> solo si vas a pedirle a Claude que edite campañas).</li>
+            <li>Vuelve a la terminal y confirma que la cuenta quedó vinculada:</li>
+          </ol>
+          <pre class="code">meta accounts list</pre>
+          <div class="expect"><b>Resultado esperado:</b> una lista con el ID y nombre de tu(s) cuenta(s) publicitaria(s). Si el comando no existe o el nombre difiere, ejecuta <code class="inline">meta --help</code> para ver los comandos disponibles en tu versión — esta CLI está en beta y su superficie de comandos puede cambiar.</div>
+        </div>
+        <div class="callout warn">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.3 3.9L2.6 18a1.5 1.5 0 001.3 2.2h16.2a1.5 1.5 0 001.3-2.2L13.7 3.9a1.5 1.5 0 00-2.6 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <div><b>Importante:</b> no generes un token manual desde el Explorador de la Graph API y lo pegues en variables de entorno. El flujo oficial <code class="inline">meta login</code> maneja la renovación del token por ti; un token manual pegado a mano expira (~60 días) y puede quedar mal alcanzado en permisos.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">A2</div>
+      <div class="step-body">
+        <h3>Que Claude Code pueda usar el CLI de Meta</h3>
+        <p>No necesitas configuración adicional: una vez el CLI está instalado y autenticado en tu máquina, Claude Code puede ejecutarlo como cualquier otro comando de terminal cuando le pidas algo relacionado con tus anuncios.</p>
+        <div class="clic-block">
+          <div class="clic-title"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cómo hacerlo, clic a clic</div>
+          <ol>
+            <li>En la misma terminal, entra a la sesión de Claude Code:</li>
+          </ol>
+          <pre class="code">claude</pre>
+          <ol start="2">
+            <li>Escribe una instrucción de prueba: <code class="inline">"Usa el CLI de meta para listar mis cuentas publicitarias"</code>.</li>
+            <li>Claude Code te mostrará qué comando quiere ejecutar (por ejemplo, <code class="inline">meta accounts list</code>) y pedirá tu aprobación antes de correrlo — esto es normal y es la capa de seguridad por defecto.</li>
+            <li>Aprueba con <code class="inline">y</code> o el botón correspondiente.</li>
+          </ol>
+          <div class="expect"><b>Resultado esperado:</b> Claude ejecuta el comando y te responde con los datos reales de tu cuenta, en lenguaje natural.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUTA B -->
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <h3>Ruta B — Conectar el servidor MCP oficial de Meta Ads</h3>
+        <div class="clic-block">
+          <div class="clic-title"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cómo hacerlo, clic a clic</div>
+          <ol>
+            <li>Dentro de la sesión de <code class="inline">claude</code> (o desde la terminal normal, antes de entrar), registra el servidor MCP de Meta:</li>
+          </ol>
+          <pre class="code">claude mcp add --transport http meta-ads https://mcp.facebook.com/ads</pre>
+          <ol start="2">
+            <li>Entra o continúa en la sesión de Claude Code y ejecuta el comando de autenticación:</li>
+          </ol>
+          <pre class="code">/mcp</pre>
+          <ol start="3">
+            <li>Selecciona el servidor <code class="inline">meta-ads</code> en la lista y sigue el enlace de autorización que aparece en la terminal.</li>
+            <li>En el navegador, inicia sesión con tu cuenta de Meta Business, elige el portafolio y la cuenta publicitaria, y aprueba los permisos.</li>
+          </ol>
+          <div class="expect"><b>Resultado esperado:</b> <code class="inline">/mcp</code> muestra el servidor <code class="inline">meta-ads</code> como <b>conectado</b>, con su número de herramientas disponibles.</div>
+        </div>
+
+        <div class="callout warn">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.3 3.9L2.6 18a1.5 1.5 0 001.3 2.2h16.2a1.5 1.5 0 001.3-2.2L13.7 3.9a1.5 1.5 0 00-2.6 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <div><b>Aviso conocido:</b> al momento de escribir esta guía, algunos usuarios reportan que el paso 3 falla específicamente en Claude Code (CLI y extensión de VS Code) con un error del tipo <code class="inline" style="background:rgba(0,0,0,0.06);">redirect_uris not registered</code>, porque Meta solo tiene registradas las direcciones de retorno de Claude.ai (web) y Claude Desktop. Si te ocurre, no es un error tuyo: usa la <b>Ruta A</b> (CLI de Meta) mientras se resuelve, o completa la autorización inicial desde Claude Desktop o claude.ai y continúa el resto del trabajo desde ahí.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PASO 5 — VERIFICAR ============ -->
+<section class="alt" id="paso6">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Comprobación</span>
+      <h2>Paso 5 · Verificar que todo quedó conectado</h2>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Revisar el estado desde la terminal</h3>
+        <div class="clic-block">
+          <div class="clic-title"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cómo hacerlo, clic a clic</div>
+          <ol>
+            <li>Si usaste la <b>Ruta A</b>, confirma la sesión del CLI: <code class="inline">meta accounts list</code>.</li>
+            <li>Si usaste la <b>Ruta B</b>, revisa los servidores MCP registrados: <code class="inline">claude mcp list</code>.</li>
+          </ol>
+          <pre class="code">claude mcp list
+<span class="comment"># deberías ver algo como:
+# meta-ads   https://mcp.facebook.com/ads   ✓ connected</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Hacer la primera pregunta real</h3>
+        <p>La prueba definitiva no es el estado de conexión, sino si Claude te devuelve datos reales de tu cuenta.</p>
+        <div class="clic-block">
+          <div class="clic-title"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cómo hacerlo, clic a clic</div>
+          <ol>
+            <li>Dentro de la sesión de Claude Code, escribe:</li>
+          </ol>
+          <pre class="code">Muéstrame mis 5 conjuntos de anuncios con mejor ROAS en los últimos 30 días, con al menos 20 conversiones.</pre>
+          <div class="expect"><b>Resultado esperado:</b> una tabla o lista con nombres reales de tus conjuntos de anuncios y sus métricas. Si Claude responde con información genérica o inventada en lugar de tus datos, la conexión no está activa — vuelve al Paso 4.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PASO 6 — USO ============ -->
+<section id="paso7">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Ya conectado</span>
+      <h2>Paso 6 · Instrucciones de ejemplo para empezar a practicar</h2>
+      <p>Empieza siempre por instrucciones de <b>lectura</b> (reportes, diagnóstico) durante tus primeras sesiones, y solo pasa a instrucciones de <b>escritura</b> (crear o editar campañas) cuando entiendas bien qué está haciendo Claude en cada paso.</p>
+    </div>
+
+    <div class="req-grid">
+      <div class="req-item">
+        <div class="req-icon" style="background:var(--green-tint); color:var(--green);"><svg viewBox="0 0 24 24" fill="none"><path d="M3 17l6-6 4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h4>Reportes y análisis (lectura)</h4>
+          <p style="font-style:italic;">"Compara el CPA de mis últimas 3 campañas activas y dime cuál está por encima del promedio."</p>
+        </div>
+      </div>
+      <div class="req-item">
+        <div class="req-icon" style="background:var(--green-tint); color:var(--green);"><svg viewBox="0 0 24 24" fill="none"><path d="M3 17l6-6 4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h4>Diagnóstico de señales</h4>
+          <p style="font-style:italic;">"Revisa si mi Pixel y la API de Conversiones están duplicando o perdiendo eventos de compra."</p>
+        </div>
+      </div>
+      <div class="req-item">
+        <div class="req-icon" style="background:var(--amber-tint); color:var(--amber);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.3 3.9L2.6 18a1.5 1.5 0 001.3 2.2h16.2a1.5 1.5 0 001.3-2.2L13.7 3.9a1.5 1.5 0 00-2.6 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h4>Edición de presupuesto (escritura)</h4>
+          <p style="font-style:italic;">"Reduce en 20% el presupuesto diario de los conjuntos de anuncios con CPA mayor a $8, pero muéstrame primero cuáles son antes de aplicar el cambio."</p>
+        </div>
+      </div>
+      <div class="req-item">
+        <div class="req-icon" style="background:var(--amber-tint); color:var(--amber);"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.3 3.9L2.6 18a1.5 1.5 0 001.3 2.2h16.2a1.5 1.5 0 001.3-2.2L13.7 3.9a1.5 1.5 0 00-2.6 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h4>Pausar anuncios (escritura)</h4>
+          <p style="font-style:italic;">"Pausa todos los anuncios con frecuencia mayor a 4 en los últimos 7 días y confírmame la lista antes de pausar."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEGURIDAD ============ -->
+<section class="alt" id="seguridad">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Antes de dar acceso de escritura</span>
+      <h2>Buenas prácticas de seguridad</h2>
+    </div>
+    <ul class="chk" style="max-width:70ch;">
+      <li><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Empieza con el permiso <code class="inline" style="background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px;">ads_read</code> únicamente. Añade <code class="inline" style="background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px;">ads_management</code> solo cuando de verdad vayas a pedirle a Claude que cree o edite algo.</li>
+      <li><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Usa siempre los flujos oficiales de autenticación (<code class="inline" style="background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px;">meta login</code> o el OAuth de <code class="inline" style="background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px;">/mcp</code>). Nunca copies y pegues un token de acceso generado a mano en un archivo de configuración.</li>
+      <li><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Mantén siempre un humano revisando: antes de aprobar una acción de escritura, pídele a Claude que te muestre exactamente qué campañas, conjuntos o presupuestos va a tocar.</li>
+      <li><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Trabaja desde una cuenta de Business Manager verificada, no desde un perfil personal sin verificación.</li>
+      <li><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Si dejas de usar el conector por un tiempo, desactívalo (<code class="inline" style="background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px;">claude mcp remove meta-ads</code> o cierra sesión con <code class="inline" style="background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px;">meta logout</code>) en lugar de dejarlo autorizado indefinidamente.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ TROUBLESHOOTING ============ -->
+<section id="problemas">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Cuando algo no sale como se espera</span>
+      <h2>Solución de problemas</h2>
+    </div>
+    <table class="tbl">
+      <thead>
+        <tr><th>Síntoma</th><th>Causa probable</th><th>Qué hacer</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Error <code class="inline">redirect_uris not registered</code> al autorizar el MCP en Claude Code</td>
+          <td>Meta aún no registra las URLs de retorno locales que usa Claude Code (CLI y extensión de VS Code).</td>
+          <td>Usa la <b>Ruta A</b> (CLI de Meta) o completa la autorización desde Claude Desktop / claude.ai y sigue trabajando desde ahí.</td>
+        </tr>
+        <tr>
+          <td>La cuenta aparece pero con <code class="inline">is_ads_mcp_enabled: false</code></td>
+          <td>El despliegue de Meta es gradual; tu cuenta aún no está habilitada en la lista de acceso.</td>
+          <td>Espera unos días e inténtalo de nuevo — no es necesario reconfigurar nada.</td>
+        </tr>
+        <tr>
+          <td>Error de validación al crear un anuncio de generación de leads (Error 100 / 1815089)</td>
+          <td>No has aceptado los Términos de Servicio de Lead Ads.</td>
+          <td>Visita <code class="inline">facebook.com/legal/leadgen/tos</code>, acepta los términos, y repite la acción.</td>
+        </tr>
+        <tr>
+          <td><code class="inline">claude</code> o <code class="inline">meta</code> no se reconocen como comando</td>
+          <td>La carpeta global de <code class="inline">npm</code> no está en el PATH de tu terminal.</td>
+          <td>Cierra y reabre la terminal. En Windows verifica con <code class="inline">npm config get prefix</code> que esa ruta esté en tus variables de entorno.</td>
+        </tr>
+        <tr>
+          <td>Claude responde con datos genéricos, no de tu cuenta real</td>
+          <td>El conector no está realmente conectado, aunque parezca estarlo.</td>
+          <td>Corre <code class="inline">claude mcp list</code> o <code class="inline">meta accounts list</code> para confirmar el estado antes de seguir.</td>
+        </tr>
+        <tr>
+          <td>Las respuestas se vuelven lentas o imprecisas tras varias preguntas</td>
+          <td>El MCP de Meta envía datos de la API sin filtrar en cada respuesta, lo que llena el contexto de la conversación.</td>
+          <td>Empieza una conversación nueva cada pocas preguntas, o desconecta el MCP cuando no lo estés usando.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ GLOSARIO ============ -->
+<section class="alt" id="glosario">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Para consultar rápido</span>
+      <h2>Glosario</h2>
+    </div>
+    <dl class="glossary">
+      <div class="gterm"><dt>MCP (Model Context Protocol)</dt><dd>Estándar abierto que define cómo un asistente de IA descubre y llama herramientas externas — en este caso, las funciones de Meta Ads.</dd></div>
+      <div class="gterm"><dt>Meta Ads AI Connectors</dt><dd>Nombre oficial de Meta para el conjunto de MCP + CLI que conecta cuentas publicitarias con asistentes de IA.</dd></div>
+      <div class="gterm"><dt>Business Manager</dt><dd>El panel central de Meta donde se administran cuentas publicitarias, páginas y permisos de un negocio.</dd></div>
+      <div class="gterm"><dt>ads_read / ads_management</dt><dd>Permisos de la Marketing API: el primero solo permite leer datos, el segundo permite además crear y editar.</dd></div>
+      <div class="gterm"><dt>OAuth</dt><dd>Protocolo de autorización que permite iniciar sesión con tu cuenta de Meta sin compartir tu contraseña con la herramienta externa.</dd></div>
+      <div class="gterm"><dt>Claude Code</dt><dd>El agente de Anthropic que ejecuta tareas dentro de tu editor o terminal, con acceso a archivos y a herramientas conectadas.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h4>Recursos oficiales</h4>
+        <ul>
+          <li><a href="https://code.claude.com/docs/en/mcp" target="_blank" rel="noopener">Documentación de MCP en Claude Code</a></li>
+          <li><a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">Claude Code en VS Code</a></li>
+          <li><a href="https://www.facebook.com/business/news/meta-ads-ai-connectors" target="_blank" rel="noopener">Anuncio oficial de Meta Ads AI Connectors</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Sobre este documento</h4>
+        <ul>
+          <li>Seminario de Pauta Digital · Meta Ads + IA</li>
+          <li>Material de apoyo autónomo para estudiantes</li>
+          <li>Última revisión: julio de 2026</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Esta guía describe una función lanzada en beta abierta por Meta el 29 de abril de 2026. Nombres de comandos, endpoints y flujos de autorización pueden cambiar sin previo aviso mientras la función evoluciona; consulta siempre los enlaces oficiales antes de una sesión en vivo con estudiantes.</p>
+  </div>
+</footer>
+
+</body>
+</html>
